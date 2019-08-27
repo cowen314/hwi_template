@@ -95,3 +95,7 @@ if __name__ == "__main__":
 
     d = SimulatedDevice("test", generic_connect_callback, generic_disconnect_callback)
     print("OK")
+
+'''
+what's an effective way to pass parameters to callbacks?
+'''
