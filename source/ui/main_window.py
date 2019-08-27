@@ -31,10 +31,15 @@ class Color(QWidget):
         self.setPalette(palette)
 
 
-app = QApplication(sys.argv)
+def start_app():
+    app = QApplication(sys.argv)
 
-window = MainWindow()
-window.show()
+    window = MainWindow()
+    window.show()
 
-# start the event loop
-app.exec_()
+    # start the event loop
+    app.exec_()
+
+
+if __name__ == "__main__":
+    start_app()
