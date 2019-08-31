@@ -17,6 +17,10 @@ class _MessageCenter:
     def send_message(topic, **kwargs):
         pass
 
+    @staticmethod
+    @abstractmethod
+    def unsubscribe(listener_callback, topic):
+        pass
 
 class PubSubMessageCenter(_MessageCenter):
     """
@@ -31,3 +35,7 @@ class PubSubMessageCenter(_MessageCenter):
     @staticmethod
     def send_message(topic, **kwargs):
         pub.sendMessage(topic, **kwargs)
+
+    @staticmethod
+    def unsubscribe(listener_callback, topic):
+        pub.unsubscribe(listener_callback, topic)

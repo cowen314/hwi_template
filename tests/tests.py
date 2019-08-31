@@ -16,6 +16,6 @@ class TestMessagingClasses(unittest.TestCase):
             arg_received = test_arg
         PubSubMessageCenter.subscribe(listener, "test")
         PubSubMessageCenter.send_message("test", test_arg=arg_passed)
-        sleep(1)
+        # sleep(1)
         self.assertTrue(callback_called)
         self.assertEqual(arg_passed, arg_received)
