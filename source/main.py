@@ -1,4 +1,3 @@
-from .engines import Device
 from .ui.main_window import start_app
 
 if __name__ == "__main__":

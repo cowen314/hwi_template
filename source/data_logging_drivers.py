@@ -1,6 +1,7 @@
 from abc import abstractmethod
 from nptdms import TdmsWriter, ChannelObject
 import numpy
+import json
 
 class _LoggingSession:
     pass
@@ -45,3 +46,31 @@ class TdmsLoggerDriver(_LoggerDriver):
     def stop_session(self):
         self._tdms_writer.close()
         self._tdms_writer = None
+
+
+class JsonLoggerDriver(_LoggerDriver):
+    def __init__(self):
+        self._json_object = None
+        self._file_path = None
+
+    def start_session(self, session):
+        self._file_path = session.file_path
+        try:
+            with open(self._file_path, mode="r+") as fh:
+                self._json_object = json.load(fh)
+        except FileNotFoundError or json.decoder.JSONDecodeError:
+            self._json_object = {}
+
+    def stop_session(self):
+        with open(self._file_path, mode="w+") as fh:
+            json.dump(self._json_object, fh)
+        self._json_object = None
+        self._file_path = None
+
+    def write_data(self, data):
+        for channel_name, data_values in data.items():
+            channel_section = self._json_object.get(channel_name)
+            if not channel_section:
+                self._json_object[channel_name] = data_values
+            else:
+                channel_section[channel_name] += data_values  # append the new data values

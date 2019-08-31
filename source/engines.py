@@ -99,7 +99,3 @@ if __name__ == "__main__":
 
     d = _EngineTemplate("test", generic_connect_callback, generic_disconnect_callback)
     print("OK")
-
-'''
-what's an effective way to pass parameters to callbacks?
-'''
