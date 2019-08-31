@@ -20,7 +20,7 @@ class SimulatedDaqDriver(_DaqDriver):
         super().__init__(name)
 
     def read_data(self):
-        return random.random()
+        return {"simulated channel": [random.random()]}
 
     def write_data(self, data):
         pass

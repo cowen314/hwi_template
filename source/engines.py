@@ -8,6 +8,7 @@ from abc import ABCMeta, abstractmethod
 
 DATA_TOPIC = "data"
 
+
 class TemplateEngineStates(Enum):
     CONNECTED = 0
     DISCONNECTED = 1
