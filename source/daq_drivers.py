@@ -7,6 +7,14 @@ class _DaqDriver:
         self.name = name
 
     @abstractmethod
+    def start(self):
+        pass
+
+    @abstractmethod
+    def stop(self):
+        pass
+
+    @abstractmethod
     def read_data(self):
         pass
 
@@ -18,6 +26,12 @@ class _DaqDriver:
 class SimulatedDaqDriver(_DaqDriver):
     def __init__(self, name):
         super().__init__(name)
+
+    def start(self):
+        pass
+
+    def stop(self):
+        pass
 
     def read_data(self):
         return {"simulated channel": [random.random()]}
