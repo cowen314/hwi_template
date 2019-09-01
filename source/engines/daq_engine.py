@@ -10,8 +10,13 @@ DAQ_MESSAGE_TOPIC = "daq"
 
 
 class StartDaqMessage(_EngineMessage):
-    def execute(self, daq_engine):
-        daq_engine.start_daq_requested()
+    def execute(self, engine_ref):
+        engine_ref.start_daq_requested()
+
+
+class StopDaqMessage(_EngineMessage):
+    def execute(self, engine_ref):
+        engine_ref.stop_daq_requested()
 
 
 class DaqEngineStates(Enum):
@@ -27,10 +32,17 @@ class DaqEngine:
         self._drivers = drivers
         PubSubMessageCenter.subscribe(self._handle_daq_messsage, DAQ_MESSAGE_TOPIC)
         self.machine = Machine(model=self, states=[i.name for i in DaqEngineStates], initial=DaqEngineStates.IDLE)
-        self.machine.add_transition(trigger="start_daq_requested",
-                                    source=DaqEngineStates.IDLE,
-                                    dest=DaqEngineStates.RUNNING,
-                                    after=self._start_periodic_daq_reads)
+        self.machine.add_transition(
+            trigger="start_daq_requested",
+            source=DaqEngineStates.IDLE,
+            dest=DaqEngineStates.RUNNING,
+            after=self._start_periodic_daq_reads)
+        self.machine.add_transition(
+            trigger="stop_daq_requested",
+            source=DaqEngineStates.IDLE,
+            dest=DaqEngineStates.RUNNING,
+            after=self._
+        )
 
     def read_and_pub_all_inputs(self):
         for driver in self._drivers:
@@ -47,12 +59,16 @@ class DaqEngine:
             driver.start()
         self._periodic_read_thread = threading.Thread(target=self._periodic_read_process,
                                             args=(self._periodic_read_thread_stop_event))
+        self._periodic_read_thread_stop_event.clear()
         self._periodic_read_thread.run()
         """
         FIXME if this fails to execute for any reason, the state machine needs to be kicked back into a Idle state.
         it might make more sense to make this "action" occur on an internal event, then fire another event on a 
         success of this "action" to put the SM into the Running state
         """
+
+    def _stop_periodic_daq_reads(self):
+        self._periodic_read_thread_stop_event.set()
 
     def _periodic_read_process(self, stop_event):
         while not stop_event.is_set():

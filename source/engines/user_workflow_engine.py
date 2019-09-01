@@ -47,17 +47,19 @@ class UserWorkflowEngine:
             if self.state == UserWorflowStates.LOGGED_OUT:
                 print("Logged out, enter credentials")  # on enter actions here
                 while True:
-                    user_input = "co"  # read from console input
-                    if user_input == "co":
+                    user_input = input("Enter username: ")  # read from console input
+                    if user_input == "co":  # TODO replace with parameters file lookup
                         self.login_succeeded()
                         break
+                    else:
+                        print("User not recognized")
             elif self.state == UserWorflowStates.IDLE_MANUAL:
                 print("Manual control state entered."
                       "Enter 'sdaq' to start DAQ operations"
                       "Enter 'stest' to start logging data for a test"
                       "Enter 'logout' to logout")
                 while True:
-                    user_input = ""
+                    user_input = input("Command: ")
                     if user_input == "sdaq":
                         PubSubMessageCenter.send_message(DAQ_MESSAGE_TOPIC, message=StartDaqMessage())
                         print("Starting DAQ")
@@ -70,7 +72,8 @@ class UserWorkflowEngine:
                         break
             elif self.state == UserWorflowStates.AUTO_TESTING:
                 print("Logging has started. A test may now be run.")
-                # TODO finish this
+                PubSubMessageCenter.send_message(DAQ_MESSAGE_TOPIC, message=StartDaqMessage())
+                PubSubMessageCenter.send_message()
 
         # update the display
         # listen for and handle events. Events may change the state, cause the UI to update, etc.

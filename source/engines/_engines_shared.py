@@ -5,5 +5,5 @@ DATA_TOPIC = "data"
 
 class _EngineMessage:
     @abstractmethod
-    def execute(self, daq_engine):
+    def execute(self, engine_ref):
         pass
