@@ -22,6 +22,7 @@ class _MessageCenter:
     def unsubscribe(listener_callback, topic):
         pass
 
+
 class PubSubMessageCenter(_MessageCenter):
     """
     This class uses the pubsub library
