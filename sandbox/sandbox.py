@@ -7,6 +7,7 @@ from source.data_logging_drivers import TdmsLoggerDriver, FileLoggingSession, Js
 from pathlib import Path
 from nptdms import TdmsWriter, ChannelObject
 
+
 if __name__ == "__main__":
     # logging to JSON or TDMS
     # logger = TdmsLoggerDriver()

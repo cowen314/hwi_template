@@ -19,3 +19,8 @@ class TestMessagingClasses(unittest.TestCase):
         # sleep(1)
         self.assertTrue(callback_called)
         self.assertEqual(arg_passed, arg_received)
+
+
+class TestEngineTemplate(unittest.TestCase):
+    # TODO
+    pass
