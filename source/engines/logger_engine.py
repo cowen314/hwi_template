@@ -13,8 +13,11 @@ class LoggerEngineStates(Enum):
 
 
 class LoggerStartMessage(_EngineMessage):
+    def __init__(self, session):
+        self.session = session
+
     def execute(self, engine_ref):
-        engine_ref.start_logging_requested()
+        engine_ref.start_logging_requested(self.session)
 
 
 class LoggerStopMessage(_EngineMessage):
@@ -30,17 +33,23 @@ The general structure of engine constructors:
 class LoggerEngine:
     def __init__(self, driver):
         self._driver = driver
-        self.machine = Machine(model=self, states=[s.name for s in LoggerEngineStates], initial=LoggerEngineStates.IDLE)
-        self.machine.add_transition(  # TODO make this an internal event, then add another event to be fired if the start_logging request is successful
+        self.machine = Machine(model=self, states=[s.name for s in LoggerEngineStates], initial=LoggerEngineStates.IDLE.name)
+        self.machine.add_transition(
+
+            # TODO make this an internal event, then add another event to be fired if the start_logging request is
+            # successful... or maybe leave it the way it is, and add some sort of default fault behavior that dumps the
+            # engine into an error state. ORRRR use the optional conditions parameter to pass in callbacks that must
+            # return True if the transition is to take place
+
             trigger='start_logging_requested',
-            source=LoggerEngineStates.IDLE,
-            dest=LoggerEngineStates.LOGGING,
+            source=LoggerEngineStates.IDLE.name,
+            dest=LoggerEngineStates.LOGGING.name,
             after=self._start_session  # TODO figure out how to pass session parameters from the caller to the callback
         )
-        self.machine.add_transition(  # TODO make this an internal event, then add another event to be fired if the start_logging request is successful
+        self.machine.add_transition(  # TODO make this an internal event, then add another event to be fired if the stop_logging request is successful
             trigger='stop_logging_requested',
-            source=LoggerEngineStates.LOGGING,
-            dest=LoggerEngineStates.IDLE,
+            source=LoggerEngineStates.LOGGING.name,
+            dest=LoggerEngineStates.IDLE.name,
             after=self._stop_session  # TODO figure out how to pass session parameters from the caller to the callback
         )
         PubSubMessageCenter.subscribe(self._handle_message, LOGGER_MESSAGE_TOPIC)

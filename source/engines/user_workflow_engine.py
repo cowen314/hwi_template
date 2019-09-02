@@ -1,9 +1,11 @@
 from abc import abstractmethod
 from enum import Enum
-
+from pathlib import Path
 from transitions import Machine
 
-from source.engines.daq_engine import DAQ_MESSAGE_TOPIC, StartDaqMessage
+from source.data_logging_drivers import FileLoggingSession
+from source.engines.daq_engine import DAQ_MESSAGE_TOPIC, StartDaqMessage, StopDaqMessage
+from source.engines.logger_engine import LOGGER_MESSAGE_TOPIC, LoggerStartMessage, LoggerStopMessage
 from source.messaging import PubSubMessageCenter
 
 
@@ -21,30 +23,35 @@ class _WorkflowState:
 
 class UserWorkflowEngine:
     def __init__(self):
-        self.machine = Machine(model=self, states=[i.name for i in UserWorflowStates], initial=UserWorflowStates.LOGGED_OUT)
+        self.machine = Machine(model=self, states=[i.name for i in UserWorflowStates], initial=UserWorflowStates.LOGGED_OUT.name)
         self.machine.add_transition(
             trigger='login_succeeded',  # TODO figure out if events can be enumerated, that'd be nice
-            source=UserWorflowStates.LOGGED_OUT,
-            dest=UserWorflowStates.IDLE_MANUAL,
+            source=UserWorflowStates.LOGGED_OUT.name,
+            dest=UserWorflowStates.IDLE_MANUAL.name,
             # after=logged_in_callback
         )
         self.machine.add_transition(
             trigger='logout_succeeded',
-            source=[UserWorflowStates.IDLE_MANUAL, UserWorflowStates.AUTO_TESTING],
-            dest=UserWorflowStates.LOGGED_OUT,
+            source=[UserWorflowStates.IDLE_MANUAL.name, UserWorflowStates.AUTO_TESTING.name],
+            dest=UserWorflowStates.LOGGED_OUT.name,
             # after=disconnected_callback
         )
         self.machine.add_transition(
-            trigger='testing_started',
-            source=UserWorflowStates.IDLE_MANUAL,
-            dest=UserWorflowStates.AUTO_TESTING
+            trigger='start_testing_requested',
+            source=UserWorflowStates.IDLE_MANUAL.name,
+            dest=UserWorflowStates.AUTO_TESTING.name
+        )
+        self.machine.add_transition(
+            trigger='stop_testing_requested',
+            source=UserWorflowStates.AUTO_TESTING.name,
+            dest=UserWorflowStates.IDLE_MANUAL.name
         )
 
     def run(self):
         """ hard implemented as command line for now, but can make this object-oriented later.
         Also, see description below for better handling"""
         while True:
-            if self.state == UserWorflowStates.LOGGED_OUT:
+            if self.state == UserWorflowStates.LOGGED_OUT.name:
                 print("Logged out, enter credentials")  # on enter actions here
                 while True:
                     user_input = input("Enter username: ")  # read from console input
@@ -53,27 +60,39 @@ class UserWorkflowEngine:
                         break
                     else:
                         print("User not recognized")
-            elif self.state == UserWorflowStates.IDLE_MANUAL:
+            elif self.state == UserWorflowStates.IDLE_MANUAL.name:
                 print("Manual control state entered."
-                      "Enter 'sdaq' to start DAQ operations"
-                      "Enter 'stest' to start logging data for a test"
-                      "Enter 'logout' to logout")
+                      "\nEnter 'sdaq' to start DAQ operations"
+                      "\nEnter 'stest' to start logging data for a test"
+                      "\nEnter 'logout' to logout")
                 while True:
                     user_input = input("Command: ")
                     if user_input == "sdaq":
                         PubSubMessageCenter.send_message(DAQ_MESSAGE_TOPIC, message=StartDaqMessage())
                         print("Starting DAQ")
-                    elif user_input == "slog":
+                    elif user_input == "stest":
                         # TODO need some way to start the logging operations
                         print("Starting testing/logging")
-                        self.testing_started()
+                        self.start_testing_requested()
+                        break
                     elif user_input == "logout":
                         self.logout_succeeded()
                         break
-            elif self.state == UserWorflowStates.AUTO_TESTING:
+            elif self.state == UserWorflowStates.AUTO_TESTING.name:
                 print("Logging has started. A test may now be run.")
                 PubSubMessageCenter.send_message(DAQ_MESSAGE_TOPIC, message=StartDaqMessage())
-                PubSubMessageCenter.send_message()
+                PubSubMessageCenter.send_message(
+                    LOGGER_MESSAGE_TOPIC,
+                    message=LoggerStartMessage(FileLoggingSession(Path("./test.json"))))
+                while True:
+                    user_input = input("Enter 'stop' to return to manual control state: ")
+                    if user_input == 'stop':
+                        PubSubMessageCenter.send_message(LOGGER_MESSAGE_TOPIC, message=LoggerStopMessage())
+                        PubSubMessageCenter.send_message(DAQ_MESSAGE_TOPIC, message=StopDaqMessage())
+                        self.stop_testing_requested()
+                        break
+
+
 
         # update the display
         # listen for and handle events. Events may change the state, cause the UI to update, etc.

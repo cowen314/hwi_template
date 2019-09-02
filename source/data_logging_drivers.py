@@ -62,7 +62,6 @@ class JsonLoggerDriver(_LoggerDriver):
         except (FileNotFoundError, json.decoder.JSONDecodeError):
             self._json_object = {}
 
-
     def stop_session(self):
         with open(self._file_path, mode="w+") as fh:
             json.dump(self._json_object, fh)

@@ -32,6 +32,8 @@ if __name__ == "__main__":
     # logger.stop_session()
 
     # User workflows
+    daq_engine = DaqEngine("daq engine", [SimulatedDaqDriver("simulated driver")])
+    logger_engine = LoggerEngine(JsonLoggerDriver())
     wf_engine = UserWorkflowEngine()
     wf_engine.run()
 
