@@ -49,3 +49,17 @@ if __name__ == "__main__":
     #     raise FileNotFoundError
     # except (FileExistsError, FileNotFoundError):
     #     print("Successfully caught error")
+
+    # variable scope testing
+    # def outer():
+    #     x = "local"
+    #
+    #     def inner():
+    #         nonlocal x
+    #         print("inner pre assign: ", x)
+    #         x = "nonlocal"
+    #         print("inner post assign:", x)
+    #
+    #     inner()
+    #     print("outer:", x)
+    # outer()

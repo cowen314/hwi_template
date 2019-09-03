@@ -12,9 +12,8 @@ class TestMessagingClasses(unittest.TestCase):
         arg_passed = 1234
 
         def listener(test_arg):
-            global callback_called
+            nonlocal callback_called, arg_received
             callback_called = True
-            global arg_received
             arg_received = test_arg
         PubSubMessageCenter.subscribe(listener, "test")
         PubSubMessageCenter.send_message("test", test_arg=arg_passed)
