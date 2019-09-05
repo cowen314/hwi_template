@@ -1,3 +1,5 @@
-pubsub
+pypubsub
 PySide2
 transitions
+nidaqmx
+nptdms

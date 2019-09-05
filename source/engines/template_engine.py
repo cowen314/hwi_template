@@ -18,22 +18,29 @@ class TemplateEngineStates(Enum):
     ERROR = 2
 
 
+# TODO consider doing something like this. transition triggers would be set to <enum_item>.name.
+# this could be a bit weird I guess... need to think on it more
+class TemplateEngineEvents(Enum):
+    connect_requested = 0
+    disconnect_requested = 1
+
+
 class _EngineTemplate:
     # states = ['disconnected', 'connected']  # leaving this here to remind one that states can also just be strings
 
     def __init__(self, name, driver, connected_callback, disconnected_callback):
         self.name = name
-        self.machine = Machine(model=self, states=[i.name for i in TemplateEngineStates], initial=TemplateEngineStates.DISCONNECTED)
+        self.machine = Machine(model=self, states=[i.name for i in TemplateEngineStates], initial=TemplateEngineStates.DISCONNECTED.name)
         self.machine.add_transition(
             trigger='connect_succeeded',
-            source='disconnected',
-            dest=TemplateEngineStates.CONNECTED,
+            source=TemplateEngineStates.DISCONNECTED.name,
+            dest=TemplateEngineStates.CONNECTED.name,
             after=connected_callback
         )
         self.machine.add_transition(
             trigger='disconnect_succeeded',
-            source='connected',
-            dest=TemplateEngineStates.DISCONNECTED,
+            source=TemplateEngineStates.CONNECTED.name,
+            dest=TemplateEngineStates.DISCONNECTED.name,
             after=disconnected_callback
         )
 
