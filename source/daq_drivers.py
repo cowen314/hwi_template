@@ -8,19 +8,25 @@ class _DaqDriver:
 
     @abstractmethod
     def start(self):
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def stop(self):
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def read_data(self):
-        pass
+        """
+        :return: dict { channel_name: values[] }
+        """
+        raise NotImplementedError
 
     @abstractmethod
     def write_data(self, data):
-        pass
+        """
+        :param data: dict { channel_name: values[] }
+        """
+        raise NotImplementedError
 
 
 class SimulatedDaqDriver(_DaqDriver):
