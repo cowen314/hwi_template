@@ -2,6 +2,7 @@ from abc import abstractmethod
 from enum import Enum
 from transitions import Machine
 from threading import Event, Thread
+import time
 
 
 class SequencerStates(Enum):
@@ -10,12 +11,14 @@ class SequencerStates(Enum):
 
 
 class SequencerStatus(Enum):
-    Okay = 0
+    Idle = 0
     InitializingSequence = 1
-    Paused = 2
-    Stopping = 3
-    Aborting = 4
-    Aborted = 5
+    Running = 2
+    DeinitializingSequence = 3
+    Paused = 4
+    Stopping = 5
+    Aborting = 6
+    Aborted = 7
 
 
 """
@@ -38,7 +41,7 @@ to start daq if we're already in the 'DAQ Running' state)
 """
 class Sequencer:
     def __init__(self):
-        self.sequence = None
+        self._sequence = None
         self.machine = Machine(model=self, states=[i.name for i in SequencerStates], initial=SequencerStates.IDLE.name)
         self.machine.add_transition(
             trigger='idle_requested',
@@ -52,7 +55,7 @@ class Sequencer:
             dest=SequencerStates.RUNNING.name,
             before=self._kick_off_sequence
         )
-        self.sequencer_status = SequencerStatus.Okay.name
+        self.sequencer_status = SequencerStatus.Idle.name
         self._sequence_stop_event = Event()
         self._sequence_thread = Thread(target=self._sequence_task)
 
@@ -60,7 +63,7 @@ class Sequencer:
         self.running_requested(sequence)
 
     def _kick_off_sequence(self, sequence):
-        self.sequence = sequence
+        self._sequence = sequence
         self.stop_requested = False
         self._sequence_stop_event.clear()
         self._sequence_thread.start()
@@ -68,22 +71,25 @@ class Sequencer:
     def _sequence_task(self):
         # init sequence
         self.sequencer_status = SequencerStatus.InitializingSequence.name
-        self.sequence.initialize()
-        self.sequencer_status = SequencerStatus.Okay.name
+        self._sequence.initialize()
+        self.sequencer_status = SequencerStatus.Running.name
 
         # execute sequence
-        while self.sequence.has_next_step():
-            self.sequence.execute_step(self._sequence_stop_event)  # TODO consider returning and handling step results here
+        while self._sequence.has_next_step():
+            self._sequence.execute_step(self._sequence_stop_event)  # TODO consider returning and handling step results here
             if self._sequence_stop_event.is_set():
-                self.sequencer_status = SequencerStatus.Stopping
                 break
-            self.sequence.next_step()
+            else:
+                self._sequence.next_step()
 
         # cleanup sequence
+        self.sequencer_status = SequencerStatus.DeinitializingSequence.name
+        self._sequence.deinitialize()
+
         if self._sequence_stop_event:
             self.sequencer_status = SequencerStatus.Aborted.name
         else:
-            self.sequencer_status = SequencerStatus.Okay.name
+            self.sequencer_status = SequencerStatus.Idle.name
 
     # TODO consider implementing this in the future
     # def stop(self):
@@ -103,7 +109,7 @@ class Sequencer:
 
     def _stop_sequence(self):
         self.sequencer_status = SequencerStatus.Aborting.name
-        self.sequence.abort()
+        self._sequence.abort()
         self._sequence_stop_event.set()
 
 
@@ -116,5 +122,70 @@ class Sequence_Status(Enum):
     Failed = 4
 
 
-class Sequence:
-    pass
+class _Sequence:
+    def __init__(self, steps):
+        self._current_step = None
+        self._steps = steps
+        self._current_step_index = 0
+
+    @abstractmethod
+    def initialize(self):
+        pass
+
+    @abstractmethod
+    def execute_step(self, stop_event):
+        pass
+
+    @abstractmethod
+    def deinitialize_step(self):
+        pass
+
+    @abstractmethod
+    def next_step(self):
+        pass
+
+    @abstractmethod
+    def has_next_step(self):
+        pass
+
+    @abstractmethod
+    def reset(self):
+        pass
+
+    # TODO consider implementing this
+    # @abstractmethod
+    # def abort(self):
+    #     pass
+
+
+class Sequence(_Sequence):
+    def __init__(self, steps):
+        super().__init__(steps)
+
+    def initialize(self):
+        time.sleep(1)
+
+    def execute_step(self, stop_event):
+        self._current_step.initialize()
+        self._current_step.execute_step(stop_event)
+        self._current_step.deinitialize()
+
+    def deinitialize_step(self):
+        time.sleep(1)
+
+    def next_step(self):
+        self._current_step_index += 1
+        if self._current_step_index < len(self._steps):
+            self._current_step = self._steps[self._current_step_index]
+
+    def has_next_step(self):
+        return self._current_step_index < (len(self._steps) - 1)
+
+    # TODO consider implementing in the future
+    # def reset(self):
+    #     self._current_step_index = 0
+
+    # TODO consider implementing this
+    # @abstractmethod
+    # def abort(self):
+    #     pass
