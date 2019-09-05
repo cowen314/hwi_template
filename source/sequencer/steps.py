@@ -16,15 +16,15 @@ class StepStatus(Enum):
 class _Step:
     @abstractmethod
     def initialize(self):
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def execute_step(self, stop_event):
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def deinitialize(self):
-        pass
+        raise NotImplementedError
 
 
 class WaitStep(_Step):

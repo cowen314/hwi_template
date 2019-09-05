@@ -20,7 +20,7 @@ class SequencerStatus(Enum):
     Aborting = 6
     Aborted = 7
 
-
+# TODO remove these comments
 """
 - No need to define an interface, for now. This is best suited as an engine, where the UI calls the event triggers
 - it would ultimately be nice if we could marry the concept of an interface to the transitions triggers
@@ -113,15 +113,6 @@ class Sequencer:
         self._sequence_stop_event.set()
 
 
-# FIXME at first glance, I dislike the idea of having a sequence status and a sequencer status. And we consolidate?
-class Sequence_Status(Enum):
-    Okay = 0
-    Errored = 1
-    Aborted = 2
-    Pass = 3
-    Failed = 4
-
-
 class _Sequence:
     def __init__(self, steps):
         self._current_step = None
@@ -130,35 +121,39 @@ class _Sequence:
 
     @abstractmethod
     def initialize(self):
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def execute_step(self, stop_event):
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def deinitialize_step(self):
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def next_step(self):
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def has_next_step(self):
-        pass
+        raise NotImplementedError
 
-    @abstractmethod
-    def reset(self):
-        pass
+    # TODO consider adding this to the interface
+    # @abstractmethod
+    # def reset(self):
+    #     raise NotImplementedError
 
-    # TODO consider implementing this
+    # TODO consider adding this to the interface
     # @abstractmethod
     # def abort(self):
     #     pass
 
 
 class Sequence(_Sequence):
+    def reset(self):
+        pass
+
     def __init__(self, steps):
         super().__init__(steps)
 

@@ -1,6 +1,6 @@
 from abc import abstractmethod
 from pathlib import Path
-from source.constants import APP_NAME, GROUP_NAME, CONFIG_FILE_DIRECTORY
+from .constants import APP_NAME, GROUP_NAME, CONFIG_FILE_DIRECTORY
 import json
 from threading import Lock
 

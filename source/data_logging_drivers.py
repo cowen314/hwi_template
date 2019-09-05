@@ -1,6 +1,5 @@
 from abc import abstractmethod
 from nptdms import TdmsWriter, ChannelObject
-import numpy
 import json
 
 

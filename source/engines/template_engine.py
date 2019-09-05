@@ -1,7 +1,7 @@
 import time
 from enum import Enum
 from random import random
-from source.messaging import PubSubMessageCenter
+from ..messaging import PubSubMessageCenter
 from threading import Thread, Event
 
 from transitions import Machine

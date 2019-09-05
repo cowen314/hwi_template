@@ -3,10 +3,10 @@ from enum import Enum
 from pathlib import Path
 from transitions import Machine
 
-from source.data_logging_drivers import FileLoggingSession
-from source.engines.daq_engine import DAQ_MESSAGE_TOPIC, StartDaqMessage, StopDaqMessage
-from source.engines.logger_engine import LOGGER_MESSAGE_TOPIC, LoggerStartMessage, LoggerStopMessage
-from source.messaging import PubSubMessageCenter
+from ..data_logging_drivers import FileLoggingSession
+from ..engines.daq_engine import DAQ_MESSAGE_TOPIC, StartDaqMessage, StopDaqMessage
+from ..engines.logger_engine import LOGGER_MESSAGE_TOPIC, LoggerStartMessage, LoggerStopMessage
+from ..messaging import PubSubMessageCenter
 
 
 class UserWorflowStates(Enum):
@@ -93,7 +93,7 @@ class UserWorkflowEngine:
                         break
 
 
-
+        # TODO remove these comments
         # update the display
         # listen for and handle events. Events may change the state, cause the UI to update, etc.
         """

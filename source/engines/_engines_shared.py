@@ -6,4 +6,4 @@ DATA_TOPIC = "data"
 class _EngineMessage:
     @abstractmethod
     def execute(self, engine_ref):
-        pass
+        raise NotImplementedError

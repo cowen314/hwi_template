@@ -1,4 +1,4 @@
-from source.application_parameters import LocalFileParameters
+from .application_parameters import LocalFileParameters
 
 
 class _ParameterSection:
