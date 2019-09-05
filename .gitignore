@@ -1,2 +1,4 @@
 /venv_common
 /.idea
+
+!/.idea/runConfigurations
