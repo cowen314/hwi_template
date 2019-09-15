@@ -22,7 +22,8 @@ class _WorkflowState:
 
 
 class UserWorkflowEngine:
-    def __init__(self):
+    def __init__(self, application_parameters):
+        self._application_parameters = application_parameters
         self.machine = Machine(model=self, states=[i.name for i in UserWorflowStates], initial=UserWorflowStates.LOGGED_OUT.name)
         self.machine.add_transition(
             trigger='login_succeeded',  # TODO figure out if events can be enumerated, that'd be nice
@@ -47,6 +48,15 @@ class UserWorkflowEngine:
             dest=UserWorflowStates.IDLE_MANUAL.name
         )
 
+    def try_login(self, username):
+        self._application_parameters.read_section()
+        if username == "co":  # TODO replace with parameters file lookup
+            self.login_succeeded()
+            return True
+        else:
+            return False
+
+
     def run(self):
         """ hard implemented as command line for now, but can make this object-oriented later.
         Also, see description below for better handling"""
@@ -55,8 +65,7 @@ class UserWorkflowEngine:
                 print("Logged out, enter credentials")  # on enter actions here
                 while True:
                     user_input = input("Enter username: ")  # read from console input
-                    if user_input == "co":  # TODO replace with parameters file lookup
-                        self.login_succeeded()
+                    if self.try_login(user_input):  # TODO replace with parameters file lookup
                         break
                     else:
                         print("User not recognized")

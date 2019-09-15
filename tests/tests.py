@@ -1,8 +1,7 @@
 import unittest
 
-from source.application_parameters import LocalFileParameters
+from source.application_parameters.application_parameters import LocalFileParameters
 from source.messaging import PubSubMessageCenter
-from time import sleep
 
 
 class TestMessagingClasses(unittest.TestCase):
@@ -31,7 +30,7 @@ class TestApplicationParameters(unittest.TestCase):
     def test_section_write_and_read(self):
         test_section_name = "test"
         test_data = [1, 2, 3, 4]
-        LocalFileParameters.open_connection()
+        LocalFileParameters.initialize()
         LocalFileParameters.write(test_section_name, test_data)
         self.assertEqual(LocalFileParameters.read(test_section_name), test_data)
-        LocalFileParameters.close_connection()
+        LocalFileParameters.deinitialize()

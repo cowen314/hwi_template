@@ -1,4 +1,9 @@
-from .application_parameters import LocalFileParameters
+from source.application_parameters.application_parameters import LocalFileParameters
+from enum import Enum
+
+
+# class SectionNames(Enum):
+#     User = 0
 
 
 class _ParameterSection:
@@ -19,10 +24,10 @@ if __name__ == "__main__":
     user_input = input("Parameters sections may be overwritten. Enter 'Y' to proceed. Enter anything else to exit. Command: ")
     if user_input == 'Y':
         print("Writing parameter sections")
-        LocalFileParameters.open_connection()
+        LocalFileParameters.initialize()
         user_params = UserParameters(["co", "co", "to", "mo", "cd"])
         write_section_by_class_name(user_params)
-        LocalFileParameters.close_connection()
+        LocalFileParameters.deinitialize()
     else:
         print("Parameter sections will not be written")
     print("Exiting")
