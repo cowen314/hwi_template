@@ -4,6 +4,7 @@ from source.constants import APP_NAME, GROUP_NAME, CONFIG_FILE_DIRECTORY
 import json
 from threading import Lock
 from source.application_parameters.application_parameter_sections import _ParameterSection
+from collections import namedtuple
 
 
 class _ApplicationParameters:
@@ -76,15 +77,14 @@ class LocalFileParameters(_ApplicationParameters):
                 with open(path, mode="w+") as file_ref:
                     json.dump(LocalFileParameters.__parameters_dict, file_ref)
 
-    @staticmethod
-    def _section_obj_to_json(obj):
-        # TODO
-        pass
+    # @staticmethod
+    # def _section_obj_to_json(obj):
+    #     json.loads(obj)
 
     @staticmethod
-    def _json_to_section_obj(jsn, section_class):
-        # TODO
-        pass
+    def _json_to_section_obj(section_class):
+        jsn = LocalFileParameters.__parameters_dict[section_class.__name__]
+        section_class(**jsn)
 
     @staticmethod
     def deinitialize():
