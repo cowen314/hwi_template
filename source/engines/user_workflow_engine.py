@@ -3,7 +3,7 @@ from enum import Enum
 from pathlib import Path
 from transitions import Machine
 
-from ..data_logging_drivers import FileLoggingSession
+from source.drivers.data_logging_drivers import FileLoggingSession
 from ..engines.daq_engine import DAQ_MESSAGE_TOPIC, StartDaqMessage, StopDaqMessage
 from ..engines.logger_engine import LOGGER_MESSAGE_TOPIC, LoggerStartMessage, LoggerStopMessage
 from ..messaging import PubSubMessageCenter
@@ -23,6 +23,7 @@ class _WorkflowState:
 
 class UserWorkflowEngine:
     def __init__(self, application_parameters):
+        print("user workflow engine init")
         self._application_parameters = application_parameters
         self.machine = Machine(model=self, states=[i.name for i in UserWorflowStates], initial=UserWorflowStates.LOGGED_OUT.name)
         self.machine.add_transition(

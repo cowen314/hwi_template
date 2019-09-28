@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="sandbox" type="PythonConfigurationType" factoryName="Python">
-    <module name="scratch-work" />
+    <module name="hwi_template" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
     <envs>
