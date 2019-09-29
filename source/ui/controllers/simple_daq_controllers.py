@@ -10,7 +10,7 @@ class LoginController(QObject):
         QObject.__init__(self)
         self._user_workflow_engine = user_workflow_engine
 
-    @Slot()
+    @Slot
     def loginRequested(self, username):
         # check the username. normally we'd want to call into the model but for the sake of simplicity, we'll do
         # everything in the controller

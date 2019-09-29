@@ -7,6 +7,7 @@ from source.drivers.data_logging_drivers import FileLoggingSession
 from ..engines.daq_engine import DAQ_MESSAGE_TOPIC, StartDaqMessage, StopDaqMessage
 from ..engines.logger_engine import LOGGER_MESSAGE_TOPIC, LoggerStartMessage, LoggerStopMessage
 from ..messaging import PubSubMessageCenter
+from ..application_parameters.application_parameter_sections import UserParameters
 
 
 class UserWorflowStates(Enum):
@@ -50,8 +51,13 @@ class UserWorkflowEngine:
         )
 
     def try_login(self, username):
-        self._application_parameters.read_section()
-        if username == "co":  # TODO replace with parameters file lookup
+        """
+        Attempt to login.
+        :param username: the username to login with
+        :return: True if the login is successful, False otherwise
+        """
+        user_params = self._application_parameters.read(UserParameters)
+        if username in user_params.users:  # TODO replace with parameters file lookup
             self.login_succeeded()
             return True
         else:
