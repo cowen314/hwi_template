@@ -25,7 +25,7 @@ def test_pinject():
 
 def test_dependency_injector_main(login_controller):
     print("This would be the top level of the application")
-    login_controller.login_requested("jimbob")
+    login_controller.loginRequested("jimbob")
 
 
 class TestLoginController:

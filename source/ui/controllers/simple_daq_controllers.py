@@ -2,23 +2,28 @@ from PySide2.QtCore import QObject, Signal, Slot, Property
 
 
 class LoginController(QObject):
-    loginSucceeded = Signal()
-    loginFailed = Signal()
+    loginSucceeded = Signal(bool)  # true if succeeded, false otherwise
+    statusTextChanged = Signal(str)
 
     def __init__(self, user_workflow_engine):
         print("login controller init")
         QObject.__init__(self)
         self._user_workflow_engine = user_workflow_engine
 
-    @Slot()
-    def login_requested(self, username):
+    @Slot(str)
+    def loginRequested(self, username):
         # check the username. normally we'd want to call into the model but for the sake of simplicity, we'll do
         # everything in the controller
         if self._user_workflow_engine.try_login(username):
             # TODO switch to other view? Not sure what the best way to do this is...
+            self.loginSucceeded.emit(True)
+            # for now, just update some text
             # we can also just switch to another page on a tab control... but it might be nice to have separate view
             # files for readability purposes
-            pass
+        else:
+            self.loginSucceeded.emit(False)
 
-
+    @Property(str, notify=[statusTextChanged, loginSucceeded])
+    def statusText(self):
+        return str(self._user_workflow_engine.state)
 

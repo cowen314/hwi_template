@@ -26,10 +26,16 @@ ApplicationWindow {
 
             Button {
                 text: "Login"
+                onClicked: controller.loginRequested(userNameEntry.text)
             }
 
             TextField {
+                id: userNameEntry
                 placeholderText: "Enter username"
+            }
+
+            Label {
+                text: controller.statusText
             }
 
         }

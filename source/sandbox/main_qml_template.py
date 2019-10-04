@@ -10,6 +10,7 @@ from source.engines.user_workflow_engine import UserWorkflowEngine
 
 if __name__ == '__main__':
     # load up the model (which consists of a number of engines)
+    LocalFileParameters.initialize()
     workflow_engine = UserWorkflowEngine(LocalFileParameters)
 
     # initialize the controllers
