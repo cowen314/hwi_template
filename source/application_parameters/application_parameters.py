@@ -36,7 +36,7 @@ class _ApplicationParameters:
 
 
 class LocalFileParameters(_ApplicationParameters):
-    __parameters_dict = None
+    __parameters_dict = {}
     __lock = Lock()
 
     @staticmethod
@@ -44,13 +44,9 @@ class LocalFileParameters(_ApplicationParameters):
         # ensure that the appropriate file exists
         try:
             path = LocalFileParameters._build_parameters_file_path()
-            backup_path = path / Path(".bak")
-            backup_path.touch()
-            with open(backup_path, "w+") as file_ref:
-                json.dump(LocalFileParameters._convert_params_dict_to_json(), file_ref)  # create a backup copy of the file in case anything goes wrong
             with open(path, "r+") as file_ref:
                 LocalFileParameters.__parameters_dict = json.load(file_ref)
-        except (FileNotFoundError, json.decoder.JSONDecodeError):
+        except (FileNotFoundError, json.decoder.JSONDecodeError) as e:
             LocalFileParameters.__parameters_dict = {}
 
         # ensure that all sections are properly populated
@@ -59,9 +55,15 @@ class LocalFileParameters(_ApplicationParameters):
                 LocalFileParameters.read(param_section)
             except KeyError:
                 LocalFileParameters.__parameters_dict[param_section.__name__] = param_section()
-
+        print(LocalFileParameters.__parameters_dict)
         with open(LocalFileParameters._build_parameters_file_path(), mode="w+") as file_ref:
             json.dump(LocalFileParameters._convert_params_dict_to_json(), file_ref)
+
+        # backup_path = LocalFileParameters._build_parameters_file_path().with_suffix(".json.bak")
+        # backup_path.touch()
+        # with open(backup_path, "w+") as file_ref:
+        #     json.dump(LocalFileParameters._convert_params_dict_to_json(),
+        #               file_ref)  # create a backup copy of the file in case anything goes wrong
 
     @staticmethod
     def read(section_class):
@@ -81,7 +83,7 @@ class LocalFileParameters(_ApplicationParameters):
             if data_class not in ALL_PARAMETERS:
                 raise TypeError("'data' must be in ALL_PARAMETERS")
 
-            LocalFileParameters.__parameters_dict.get[data_class.__name__] = data
+            LocalFileParameters.__parameters_dict[data_class.__name__] = data
             try:
                 with open(LocalFileParameters._build_parameters_file_path(), mode="w+") as file_ref:  # FIXME? this might be a bit slow
                     json.dump(LocalFileParameters._convert_params_dict_to_json(), file_ref)

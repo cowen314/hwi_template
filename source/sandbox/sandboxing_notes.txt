@@ -1,0 +1,3 @@
+* invoke these scripts from the `source` directory
+* use absolute imports to avoid sibling package import error
+  * https://stackoverflow.com/questions/30669474/beyond-top-level-package-error-in-relative-import

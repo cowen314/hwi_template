@@ -1,9 +1,5 @@
-from ..application_parameters.application_parameters import LocalFileParameters
-from ..application_parameters.application_parameter_sections import UserParameters
-
-
-def write_section_by_class_name(obj):
-    LocalFileParameters.write(type(obj).__name__, obj)
+from source.application_parameters.application_parameters import LocalFileParameters
+from source.application_parameters.application_parameter_sections import UserParameters
 
 
 if __name__ == "__main__":
@@ -12,7 +8,7 @@ if __name__ == "__main__":
         print("Writing parameter sections")
         LocalFileParameters.initialize()
         user_params = UserParameters(["co", "co", "to", "mo", "cd"])
-        write_section_by_class_name(user_params)
+        LocalFileParameters.write(user_params)
         LocalFileParameters.deinitialize()
     else:
         print("Parameter sections will not be written")
