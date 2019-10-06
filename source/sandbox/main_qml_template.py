@@ -10,7 +10,7 @@ from source.engines.user_workflow_engine import UserWorkflowEngine
 
 if __name__ == '__main__':
     # load up the model (which consists of a number of engines)
-    LocalFileParameters.initialize()
+    # LocalFileParameters.initialize()
     workflow_engine = UserWorkflowEngine(LocalFileParameters)
 
     # initialize the controllers
@@ -21,7 +21,8 @@ if __name__ == '__main__':
     context.setContextProperty("controller", ctlr)
 
     # load up view(s)?
-    qml_file = Path("../ui/qml_views/simple_daq_application.qml").resolve()
+    # qml_file = Path("../ui/qml_views/simple_login_screen.qml").resolve()
+    qml_file = Path("../ui/qml_views/simple_daq_app_example.qml").resolve()
     qml_engine.load(QUrl.fromLocalFile(str(qml_file.absolute())))
 
     if not qml_engine.rootObjects():

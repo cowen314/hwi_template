@@ -56,7 +56,8 @@ class UserWorkflowEngine:
         :param username: the username to login with
         :return: True if the login is successful, False otherwise
         """
-        user_params = self._application_parameters.read(UserParameters)
+        # user_params = self._application_parameters.read(UserParameters)
+        user_params = UserParameters(users=["co", "user"])
         if username in user_params.users:  # TODO replace with parameters file lookup
             self.login_succeeded()
             return True

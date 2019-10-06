@@ -3,30 +3,39 @@ import QtQuick.Window 2.0
 import QtQuick.Controls 2.5
 import QtQuick.Layouts 1.13
 
-ApplicationWindow {
-    id: rootWindow
+// be sure to change Item to ApplicationWindow if running as top level view
+Item {
+    id: loginItem
 
     width: 1080
     height: 480
     visible: true
 
-    title: "A simple DAQ application"
+//    title: "A login screen"
+
+//    signal stateChanged()
 
     RowLayout {
-        id: mainLayout
-        anchors.fill: parent // what is this?
-
-//        Rectangle {
-//            id: spacer1
-//            Layout.fillHeight: true
-//            Layout.fillWidth: true
-//        }
+        id: mainLoginLayout
+        anchors.fill: parent
 
         RowLayout {
 
             Button {
                 text: "Login"
                 onClicked: controller.loginRequested(userNameEntry.text)
+            }
+
+            Button {
+                text: "Log"
+                onClicked: {
+                    console.error("This is a test")
+                    console.warn("test")
+                    console.exception("Test")
+                    console.debug("dtest")
+                    console.log("log")
+                    controller.log("this is a log")
+                }
             }
 
             TextField {
