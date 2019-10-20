@@ -1,11 +1,12 @@
-from ..source.engines.daq_engine import DaqEngine
-from ..source.engines.logger_engine import LoggerEngine
-from ..source.engines.user_workflow_engine import UserWorkflowEngine
-from ..source.messaging import PubSubMessageCenter
-from ..source.daq_drivers import SimulatedDaqDriver
-from ..source.data_logging_drivers import TdmsLoggerDriver, FileLoggingSession, JsonLoggerDriver
 from pathlib import Path
-from nptdms import TdmsWriter, ChannelObject
+
+from source.application_parameters.application_parameter_sections import UserParameters
+from source.engines.daq_engine import DaqEngine
+from source.engines.logger_engine import LoggerEngine
+from source.engines.user_workflow_engine import UserWorkflowEngine
+from source.drivers.daq_drivers import SimulatedDaqDriver
+from source.drivers.data_logging_drivers import JsonLoggerDriver
+import json
 
 
 if __name__ == "__main__":
@@ -33,10 +34,10 @@ if __name__ == "__main__":
     # logger.stop_session()
 
     # User workflows
-    daq_engine = DaqEngine("daq engine", [SimulatedDaqDriver("simulated driver")])
-    logger_engine = LoggerEngine(JsonLoggerDriver())
-    wf_engine = UserWorkflowEngine()
-    wf_engine.run()
+    # daq_engine = DaqEngine("daq engine", [SimulatedDaqDriver("simulated driver")])
+    # logger_engine = LoggerEngine(JsonLoggerDriver())
+    # wf_engine = UserWorkflowEngine()
+    # wf_engine.run()
 
     # messaging
     # def listener(test_arg):
@@ -67,3 +68,21 @@ if __name__ == "__main__":
     # while True:
     #     if True:
     #         break
+
+    class ParameterConverter:
+        @staticmethod
+        def convert(o):
+            a = {}
+            for k, v in o.items():
+                a[k] = v.__dict__
+            return a
+            # return o.__dict__
+
+
+    # serialization
+    up = UserParameters(users=["test user"])
+    params = {"UserParameters": up}
+    with open(Path("test.json"), "w+") as f:
+        # json.dump(up.__dict__, f)  # this works
+        # json.dump(params, f)  # this doesn't
+        json.dump(ParameterConverter.convert(params), f)

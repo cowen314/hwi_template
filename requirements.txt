@@ -3,3 +3,5 @@ PySide2
 transitions
 nidaqmx
 nptdms
+pinject
+dependency-injector
