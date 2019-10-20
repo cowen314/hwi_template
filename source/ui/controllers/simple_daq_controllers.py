@@ -4,6 +4,7 @@ from PySide2.QtCore import QObject, Signal, Slot, Property
 class LoginController(QObject):
     loginSucceeded = Signal(bool)  # true if succeeded, false otherwise
     stateChanged = Signal()
+    testSignal = Signal()
 
     def __init__(self, user_workflow_engine):
         print("login controller init")
@@ -12,7 +13,7 @@ class LoginController(QObject):
 
     @Slot(str)
     def log(self, message):
-        print(message)
+        print("From QML: " + message)
 
     @Slot(str)
     def loginRequested(self, username):
@@ -27,6 +28,10 @@ class LoginController(QObject):
             # files for readability purposes
         else:
             self.loginSucceeded.emit(False)
+
+    @Slot()
+    def testSlot(self):
+        self.testSignal.emit()
 
     @Property(str, notify=stateChanged)
     def statusText(self):

@@ -12,6 +12,9 @@ ApplicationWindow {
 
     title: "A simple DAQ application"
 
+    signal stateChanged()
+    signal testSignal()
+
     RowLayout {
         id: mainLayout
         anchors.fill: parent
@@ -28,13 +31,14 @@ ApplicationWindow {
 
         Button {
             text: "Log"
-            onClicked: controller.log("log from the app window")
+            onClicked: controller.log("log from the top level")
         }
 
         // create connections to signals from other views
         Connections {
             target: mainLoader.item
-            onStateChanged: controller.log("state changed")
+//            onStateChanged: controller.log("state changed")
+            onTestSignal: controller.log("test signal caught")
         }
 
     }
