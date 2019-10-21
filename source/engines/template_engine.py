@@ -29,20 +29,36 @@ class _EngineTemplate:
     # states = ['disconnected', 'connected']  # leaving this here to remind one that states can also just be strings
 
     def __init__(self, name, driver, connected_callback, disconnected_callback):
+        # TODO add type annotations to constructor parameters
         self.name = name
         self.machine = Machine(model=self, states=[i.name for i in TemplateEngineStates], initial=TemplateEngineStates.DISCONNECTED.name)
         self.machine.add_transition(
-            trigger='connect_succeeded',
+            trigger='_connect_succeeded',
             source=TemplateEngineStates.DISCONNECTED.name,
             dest=TemplateEngineStates.CONNECTED.name,
             after=connected_callback
         )
         self.machine.add_transition(
-            trigger='disconnect_succeeded',
+            trigger='_disconnect_succeeded',
             source=TemplateEngineStates.CONNECTED.name,
             dest=TemplateEngineStates.DISCONNECTED.name,
             after=disconnected_callback
         )
+
+    """BEGIN TRANSITION HELPER METHODS"""
+    # define transition helper methods here for all public transitions. These helpers:
+    # - help enable auto complete
+    # - provide an explicit declaration of "public" transitions
+    # - decoration of transitions
+    # - should NOT contain anything that depends on state
+
+    def connect_succeeded(self):
+        self._connect_succeeded()
+
+    def disconnect_succeeded(self):
+        self._disconnect_succeeded()
+
+    """END TRANSITION HELPER METHODS"""
 
     def connect(self):
         print("Attempting to connect")

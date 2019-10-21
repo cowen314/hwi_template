@@ -2,6 +2,9 @@ import unittest
 
 from source.application_parameters.application_parameters import LocalFileParameters
 from source.messaging import PubSubMessageCenter
+from source.engines.daq_engine import DaqEngine
+from source.drivers.daq_drivers import SimulatedDaqDriver
+from transitions.core import MachineError
 
 
 class TestMessagingClasses(unittest.TestCase):
@@ -34,3 +37,26 @@ class TestApplicationParameters(unittest.TestCase):
         LocalFileParameters.write(test_section_name, test_data)
         self.assertEqual(LocalFileParameters.read(test_section_name), test_data)
         LocalFileParameters.deinitialize()
+
+
+class TestDaqEngine(unittest.TestCase):
+    def test_invalid_state_transitions(self):
+        """
+        engines should toss exception if transition are requested in the wrong state
+        """
+        daq_engine = DaqEngine("test_engine", [SimulatedDaqDriver("simulated_daq_driver")])
+        self.assertRaises(MachineError, daq_engine.stop_daq_requested)
+        daq_engine.start_daq_requested()
+        self.assertRaises(MachineError, daq_engine.start_daq_requested)
+
+    def test_add_publication_target(self):
+        """
+        the DAQ engine allow adding additional publication targets
+        """
+        daq_engine = DaqEngine("test_engine", [SimulatedDaqDriver("simulated_daq_driver")])
+        daq_engine.add_publication_topic()
+        # TODO finish this
+
+    def test_data_writes(self):
+        # TODO
+        pass

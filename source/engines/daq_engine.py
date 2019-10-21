@@ -3,9 +3,13 @@ from enum import Enum
 from transitions import Machine
 import threading
 from ._engines_shared import _EngineMessage, DATA_TOPIC
-from ..messaging import PubSubMessageCenter
+from ..messaging import PubSubMessageCenter, _MessageCenter
+from typing import List
+from ..drivers.daq_drivers import _DaqDriver
 
 DAQ_MESSAGE_TOPIC = "daq"
+
+# FIXME? do we need a messaging infrastructure? Can we just do this all via events?
 
 
 class StartDaqMessage(_EngineMessage):
@@ -24,28 +28,56 @@ class DaqEngineStates(Enum):
 
 
 class DaqEngine:
-    def __init__(self, name, drivers):
+    def __init__(self, name: str, drivers: List[_DaqDriver], message_center: _MessageCenter, wait_time: float = 0.1):
+        """
+        :param name: a name to identify this engine
+        :param drivers: an array of drivers to be used for data collection
+        :param message_center: reference to a message center used for publishing data
+        :param wait_time: the time, in seconds, to wait between R/W cycles
+        """
         self.name = name
         self._periodic_read_thread = None
         self._periodic_read_thread_stop_event = threading.Event()
         self._drivers = drivers
-        PubSubMessageCenter.subscribe(self._handle_daq_messsage, DAQ_MESSAGE_TOPIC)
+        self._message_center = message_center
+        self.wait_time = wait_time
+
+        # define connections
+        self._message_center.subscribe(self._handle_daq_messsage, DAQ_MESSAGE_TOPIC)
+
+        # define state logic
         self.machine = Machine(model=self, states=[i.name for i in DaqEngineStates], initial=DaqEngineStates.IDLE.name)
         self.machine.add_transition(
-            trigger="start_daq_requested",
+            trigger="_start_daq_requested",
             source=DaqEngineStates.IDLE.name,
             dest=DaqEngineStates.RUNNING.name,
             after=self._start_periodic_daq_reads)
         self.machine.add_transition(
-            trigger="stop_daq_requested",
+            trigger="_stop_daq_requested",
             source=DaqEngineStates.RUNNING.name,
             dest=DaqEngineStates.IDLE.name,
             after=self._stop_periodic_daq_reads
         )
 
-    def read_and_pub_all_inputs(self):
+    """BEGIN TRANSITION HELPER METHODS"""
+    # define transition helper methods here for all public transitions. These helpers:
+    # - help enable auto complete
+    # - provide an explicit declaration of "public" transitions
+    # - decoration of transitions
+    # - should NOT contain anything that depends on state
+
+    def start_daq_requested(self):
+        self._start_daq_requested()
+
+    def stop_daq_requested(self):
+        self._stop_daq_requested()
+
+    """END TRANSITION HELPER METHODS"""
+
+    def _read_and_pub_all_inputs(self):
         for driver in self._drivers:
-            PubSubMessageCenter.send_message(DATA_TOPIC, source_string=driver.name, data=driver.read_data())
+            self._message_center.send_message(DATA_TOPIC, source_string=driver.name, data=driver.read_data())
+            # TODO make DATA_TOPIC a parameter, add support for adding / removing topics
 
     def _handle_daq_messsage(self, message):
         message.execute(self)
@@ -69,5 +101,5 @@ class DaqEngine:
 
     def _periodic_read_process(self, stop_event=None):
         while not stop_event.is_set():
-            self.read_and_pub_all_inputs()
-            time.sleep(1)
+            self._read_and_pub_all_inputs()
+            time.sleep(self.wait_time)
