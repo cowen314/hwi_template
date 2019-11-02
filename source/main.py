@@ -1,4 +1,4 @@
-from .ui.main_window import start_app
+from source.ui.qml.main_window import start_app
 
 
 if __name__ == "__main__":
