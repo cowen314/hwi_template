@@ -1,0 +1,38 @@
+<head>
+    <script src="linkers/python_linker.js"></script>
+    <script src="sandbox.js"></script>
+    <meta charset="UTF-8">
+</head>
+
+<body>
+    <div>
+        <button>Button 1</button>
+        <button><a href="other-page.html">Other page</a></button>
+        <input type="text" id="pythonArgument">
+        <button onclick="get_stuff_from_python_example()">Call python!</button>    
+    </div>
+    <br>
+    <div>
+        <input type="text" id="input">
+        <button onclick="to_upper_case(document.getElementById('input').value)">To Upper</button>
+        <!--how to pass data around?-->
+        <!-- how to display data -->
+    </div>
+    <br>
+    <div>
+        <script>
+            function get_data(){
+                var request = new XMLHttpRequest();
+                request.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200){
+                        document.getElementById("data_demo").innerHTML = request.responseText
+                    }
+                }
+                request.open("GET", "http://127.0.0.1:5001/data_example", true)
+                request.send()
+            }
+        </script>
+        <button onclick="get_data()">Get Data</button>
+        <div id="data_demo">... No data loaded yet</div>
+    </div>
+</body>
