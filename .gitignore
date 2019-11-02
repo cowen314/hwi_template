@@ -4,6 +4,8 @@
 !/.idea/runConfigurations
 /venv/
 
+/source/ui/electron/node_modules/
+
 # Standard stuff:
 
 # Byte-compiled / optimized / DLL files
