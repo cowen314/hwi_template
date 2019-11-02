@@ -5,6 +5,7 @@ from source.messaging import PubSubMessageCenter
 from source.engines.daq_engine import DaqEngine
 from source.drivers.daq_drivers import SimulatedDaqDriver
 from transitions.core import MachineError
+from source.engines.template_engine import EngineTemplate
 
 
 class TestMessagingClasses(unittest.TestCase):
@@ -24,9 +25,18 @@ class TestMessagingClasses(unittest.TestCase):
         self.assertEqual(arg_passed, arg_received)
 
 
-class TestEngineTemplate(unittest.TestCase):
-    # TODO
-    pass
+# class TestEngineTemplate(unittest.TestCase):
+#     @staticmethod
+#     def connect_callback():
+#         print("connect callback called")
+#
+#     @staticmethod
+#     def disconnect_callback_called():
+#         print("disconnect callback called")
+#
+#     templte_engine = EngineTemplate("Engine Template", None, connect_callback, disconnect_callback_called)
+#
+#     templte_engine.connect_requested()
 
 
 class TestApplicationParameters(unittest.TestCase):
