@@ -10,3 +10,6 @@ window.addEventListener('DOMContentLoaded', () => {
     replaceText(`${type}-version`, process.versions[type])
   }
 })
+
+// const Plotly = require("plotly.js-dist");
+// const daqjs = require("./daq.js");
