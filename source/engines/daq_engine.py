@@ -1,5 +1,6 @@
 import time
 from enum import Enum
+import traceback
 from transitions import Machine
 import threading
 from ._engines_shared import _EngineMessage, DATA_TOPIC
@@ -76,6 +77,11 @@ class DaqEngine:
             dest=DaqEngineStates.ERROR.name,
             after=self._stop_periodic_daq_reads
         )
+        self.machine.add_transition(
+            trigger="_reset_error_requested",
+            source=DaqEngineStates.ERROR.name,
+            dest=DaqEngineStates.IDLE.name
+        )
 
     """BEGIN TRANSITION HELPER METHODS"""
     # define transition helper methods here for all PUBLIC transitions. These helpers:
@@ -89,6 +95,9 @@ class DaqEngine:
 
     def stop_daq_requested(self):
         self._stop_daq_requested()
+
+    def reset_error_requested(self):
+        self._reset_error_requested()
 
     """END TRANSITION HELPER METHODS"""
 
@@ -117,7 +126,8 @@ class DaqEngine:
                 kwargs={"stop_event": self._periodic_read_thread_stop_event})  # FIXME get this working with regular old args
             self._periodic_read_thread_stop_event.clear()
             self._periodic_read_thread.start()
-        except Exception as e:
+        except Exception:
+            traceback.print_exc()
             self._error_occurred()
 
     def _stop_periodic_daq_reads(self):
@@ -128,5 +138,6 @@ class DaqEngine:
             while not stop_event.is_set():
                 self._read_and_pub_all_inputs()
                 time.sleep(self.wait_time)
-        except Exception as e:
+        except Exception:
+            traceback.print_exc()
             self._error_occurred()

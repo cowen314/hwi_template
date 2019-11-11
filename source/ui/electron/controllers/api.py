@@ -40,6 +40,15 @@ def start_daq():
         return "Already in the requested state"
 
 
+@app.route("/daq/resetError")
+def reset_daq_error():
+    try:
+        daq_engine.reset_error_requested()
+        return ""
+    except MachineError:
+        return "Either not in error state, or error reset failed"
+
+
 @app.route("/daq/stop")
 def stop_daq():
     try:
