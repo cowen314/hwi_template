@@ -6,3 +6,4 @@ nptdms
 pinject
 dependency-injector
 flask
+requests

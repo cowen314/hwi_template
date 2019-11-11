@@ -6,10 +6,14 @@ from ._engines_shared import _EngineMessage, DATA_TOPIC
 from ..messaging import PubSubMessageCenter, _MessageCenter
 from typing import List
 from ..drivers.daq_drivers import _DaqDriver
+from .data_buffer_engine import _BufferEngine
+from ._engines_shared import build_key
 
 DAQ_MESSAGE_TOPIC = "daq"
 
 # FIXME? do we need a messaging infrastructure? Can we just do this all via events?
+# the main argument for messaging, as I see it, is that it allows nice communication between state machines.
+# there's probably a much better way to make that happen though...
 
 
 class StartDaqMessage(_EngineMessage):
@@ -25,10 +29,12 @@ class StopDaqMessage(_EngineMessage):
 class DaqEngineStates(Enum):
     IDLE = 0
     RUNNING = 1
+    ERROR = 2
 
 
 class DaqEngine:
-    def __init__(self, name: str, drivers: List[_DaqDriver], message_center: _MessageCenter, wait_time: float = 0.1):
+    def __init__(self, name: str, drivers: List[_DaqDriver], buffer_engine: _BufferEngine,
+                 message_center: _MessageCenter = PubSubMessageCenter(), wait_time: float = 0.1):
         """
         :param name: a name to identify this engine
         :param drivers: an array of drivers to be used for data collection
@@ -41,6 +47,7 @@ class DaqEngine:
         self._drivers = drivers
         self._message_center = message_center
         self.wait_time = wait_time
+        self._buffer_engine = buffer_engine
 
         # define connections
         self._message_center.subscribe(self._handle_daq_messsage, DAQ_MESSAGE_TOPIC)
@@ -58,12 +65,23 @@ class DaqEngine:
             dest=DaqEngineStates.IDLE.name,
             after=self._stop_periodic_daq_reads
         )
+        self.machine.add_transition(
+            trigger="_error_occurred",
+            source=DaqEngineStates.IDLE.name,
+            dest=DaqEngineStates.ERROR.name
+        )
+        self.machine.add_transition(
+            trigger="_error_occurred",
+            source=DaqEngineStates.RUNNING.name,
+            dest=DaqEngineStates.ERROR.name,
+            after=self._stop_periodic_daq_reads
+        )
 
     """BEGIN TRANSITION HELPER METHODS"""
-    # define transition helper methods here for all public transitions. These helpers:
+    # define transition helper methods here for all PUBLIC transitions. These helpers:
     # - help enable auto complete
     # - provide an explicit declaration of "public" transitions
-    # - decoration of transitions
+    # - allow decoration of transitions
     # - should NOT contain anything that depends on state
 
     def start_daq_requested(self):
@@ -76,30 +94,39 @@ class DaqEngine:
 
     def _read_and_pub_all_inputs(self):
         for driver in self._drivers:
-            self._message_center.send_message(DATA_TOPIC, source_string=driver.name, data=driver.read_data())
+            # there are a few options here:
+
+            # (1) publish to the message center
+            data = driver.read_data()
+            # self._message_center.send_message(DATA_TOPIC, source_string=driver.name)
             # TODO make DATA_TOPIC a parameter, add support for adding / removing topics
+
+            # (2) publish to the buffer engine
+            for channel_name, values in data.items():
+                self._buffer_engine.write(build_key(channel_name, driver_name=driver.name), values, synchronous=False)
 
     def _handle_daq_messsage(self, message):
         message.execute(self)
 
     def _start_periodic_daq_reads(self):
-        for driver in self._drivers:
-            driver.start()
-        self._periodic_read_thread = threading.Thread(
-            target=self._periodic_read_process,
-            kwargs={"stop_event": self._periodic_read_thread_stop_event})  # FIXME get this working with regular old args
-        self._periodic_read_thread_stop_event.clear()
-        self._periodic_read_thread.start()
-        """
-        FIXME if this fails to execute for any reason, the state machine needs to be kicked back into a Idle state.
-        it might make more sense to make this "action" occur on an internal event, then fire another event on a 
-        success of this "action" to put the SM into the Running state
-        """
+        try:
+            for driver in self._drivers:
+                driver.start()
+            self._periodic_read_thread = threading.Thread(
+                target=self._periodic_read_process,
+                kwargs={"stop_event": self._periodic_read_thread_stop_event})  # FIXME get this working with regular old args
+            self._periodic_read_thread_stop_event.clear()
+            self._periodic_read_thread.start()
+        except Exception as e:
+            self._error_occurred()
 
     def _stop_periodic_daq_reads(self):
         self._periodic_read_thread_stop_event.set()
 
     def _periodic_read_process(self, stop_event=None):
-        while not stop_event.is_set():
-            self._read_and_pub_all_inputs()
-            time.sleep(self.wait_time)
+        try:
+            while not stop_event.is_set():
+                self._read_and_pub_all_inputs()
+                time.sleep(self.wait_time)
+        except Exception as e:
+            self._error_occurred()

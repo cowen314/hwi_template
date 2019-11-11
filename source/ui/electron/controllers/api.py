@@ -1,6 +1,7 @@
 from flask import Flask, Response
 from .sample_engine import SampleEngine
 from ....engines.daq_engine import DaqEngine
+from ....engines.data_buffer_engine import BufferEngine
 from ....drivers.daq_drivers import SimulatedDaqDriver
 from transitions.core import MachineError
 from ....messaging import PubSubMessageCenter
@@ -9,7 +10,8 @@ from ....messaging import PubSubMessageCenter
 #     def __init__(self):
 
 app = Flask(__name__)
-daq_engine = DaqEngine("daq engine", [SimulatedDaqDriver("sim daq driver")], PubSubMessageCenter())
+buffer_engine = BufferEngine()
+daq_engine = DaqEngine("daq engine", [SimulatedDaqDriver("sim daq driver")], buffer_engine)
 
 
 @app.route("/")

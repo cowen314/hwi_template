@@ -1,4 +1,6 @@
 import unittest
+import requests
+import datetime
 
 from source.application_parameters.application_parameters import LocalFileParameters
 from source.messaging import PubSubMessageCenter
@@ -6,6 +8,7 @@ from source.engines.daq_engine import DaqEngine
 from source.drivers.daq_drivers import SimulatedDaqDriver
 from transitions.core import MachineError
 from source.engines.template_engine import EngineTemplate
+from source.ui.electron.controllers.api import app as electron_app
 
 
 class TestMessagingClasses(unittest.TestCase):
@@ -39,14 +42,14 @@ class TestMessagingClasses(unittest.TestCase):
 #     templte_engine.connect_requested()
 
 
-class TestApplicationParameters(unittest.TestCase):
-    def test_section_write_and_read(self):
-        test_section_name = "test"
-        test_data = [1, 2, 3, 4]
-        LocalFileParameters.initialize()
-        LocalFileParameters.write(test_section_name, test_data)
-        self.assertEqual(LocalFileParameters.read(test_section_name), test_data)
-        LocalFileParameters.deinitialize()
+# class TestApplicationParameters(unittest.TestCase):
+#     def test_section_write_and_read(self):
+#         test_section_name = "test"
+#         test_data = [1, 2, 3, 4]
+#         LocalFileParameters.initialize()
+#         LocalFileParameters.write(test_section_name, test_data)
+#         self.assertEqual(LocalFileParameters.read(test_section_name), test_data)
+#         LocalFileParameters.deinitialize()
 
 
 class TestDaqEngine(unittest.TestCase):
@@ -59,14 +62,25 @@ class TestDaqEngine(unittest.TestCase):
         daq_engine.start_daq_requested()
         self.assertRaises(MachineError, daq_engine.start_daq_requested)
 
-    def test_add_publication_target(self):
-        """
-        the DAQ engine allow adding additional publication targets
-        """
-        daq_engine = DaqEngine("test_engine", [SimulatedDaqDriver("simulated_daq_driver")])
-        daq_engine.add_publication_topic()
-        # TODO finish this
+    # def test_add_publication_target(self):
+    #     """
+    #     the DAQ engine allow adding additional publication targets
+    #     """
+    #     daq_engine = DaqEngine("test_engine", [SimulatedDaqDriver("simulated_daq_driver")])
+    #     daq_engine.add_publication_topic()
+    #     # TODO finish this
 
     def test_data_writes(self):
         # TODO
         pass
+
+
+class TestElectronApi(unittest.TestCase):
+    def get_state_benchmark(self):
+        # TODO refactor launching of the electron app so that we can pass depends in
+        electron_app.run()
+        t1 = datetime.datetime.now()
+        state = requests.get('127.0.0.1/daq/state')
+        t2 = datetime.datetime.now()
+        print("Time to read state: %s" % (t2-t1).seconds)
+        self.assertEqual("", "")

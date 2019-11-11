@@ -1,5 +1,25 @@
 from ..messaging import _MessageCenter, PubSubMessageCenter
 from abc import abstractmethod
+from queue import SimpleQueue
+
+
+class _BufferEngine(object):
+    @abstractmethod
+    def read_latest_value(self, key: str):
+        raise NotImplementedError
+
+    @abstractmethod
+    def write(self, key: str, value, synchronous: bool = False):
+        raise NotImplementedError
+
+    @abstractmethod
+    def create_subscription(self, key: str) -> SimpleQueue:
+        raise NotImplementedError
+
+
+class BufferEngine(_BufferEngine):
+    def read_latest_value(self, key: str):
+        pass
 
 
 class _InputHandler:
