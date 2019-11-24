@@ -1,7 +1,7 @@
 from ..messaging import _MessageCenter, PubSubMessageCenter
 from abc import abstractmethod
 from queue import Queue
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Tuple, Iterable
 
 
 class _BufferEngine(object):
@@ -16,6 +16,14 @@ class _BufferEngine(object):
         raise NotImplementedError
 
     @abstractmethod
+    def get_all_keys(self) -> Iterable[str]:
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_all_keys_and_values(self) -> Iterable[Tuple[str, Any]]:
+        raise NotImplementedError
+
+    @abstractmethod
     def create_subscription(self, key: str) -> Queue:
         raise NotImplementedError
 
@@ -27,6 +35,16 @@ class BufferEngine(_BufferEngine):
 
     def read_latest_value(self, key: str):
         return self._values[key]
+
+    def get_all_keys(self) -> Iterable[str]:
+        return self._values.keys()
+
+    def get_all_keys_and_values(self) -> Iterable[Tuple[str, Any]]:
+        # not the best implementation here, but just want to get things working
+        pairs = []
+        for k, v in self._values.items():
+            pairs.append((k, v))
+        return pairs
 
     def write(self, key: str, value):
         self._values[key] = value

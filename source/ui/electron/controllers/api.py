@@ -63,6 +63,14 @@ def daq_state():
     return daq_engine.state
 
 
+@app.route("/daq/getCurrentKeysAndValues")
+def get_keys_and_values():
+    be = buffer_engine.get_all_keys_and_values()
+    return {
+        "data": buffer_engine.get_all_keys_and_values()
+    }
+
+
 if __name__ == "__main__":
     print("about to start the flask app...")
     app.run(host="127.0.0.1", port=5001)

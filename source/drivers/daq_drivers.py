@@ -1,6 +1,6 @@
 from abc import abstractmethod
 import random
-from typing import Dict, List
+from typing import Dict, Iterable
 from datetime import datetime
 
 
@@ -10,7 +10,7 @@ class ReadData:
         self.value = value
 
 
-class _DaqDriver:
+class _DaqDriver(object):
     def __init__(self, name):
         self.name = name
 
@@ -23,7 +23,7 @@ class _DaqDriver:
         raise NotImplementedError
 
     @abstractmethod
-    def read_data(self) -> Dict[str, List[ReadData]]:
+    def read_data(self) -> Dict[str, Iterable[ReadData]]:
         raise NotImplementedError
 
     @abstractmethod
@@ -44,8 +44,11 @@ class SimulatedDaqDriver(_DaqDriver):
     def stop(self):
         pass
 
-    def read_data(self) -> Dict[str, List[ReadData]]:
-        return {"simulated channel": [ReadData(datetime.now(), random.random())]}
+    def read_data(self) -> Dict[str, Iterable[ReadData]]:
+        return {
+            "simulated channel": [ReadData(datetime.now(), random.random())],
+            "simulated channel 2": [ReadData(datetime.now(), random.random())]
+        }
 
     def write_data(self, data):
         pass
@@ -55,6 +58,12 @@ class NiDaqDriver(_DaqDriver):
     def __init__(self, name, task):
         super().__init__(name)
         self._task = task
+
+    def start(self):
+        raise NotImplementedError
+
+    def stop(self):
+        raise NotImplementedError
 
     def read_data(self):
         return self._task.read()

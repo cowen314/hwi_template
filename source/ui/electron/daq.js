@@ -11,8 +11,8 @@ function get_daq_state(daqStateElementId){
             }
         }
     }
-    request.open("GET", "http://127.0.0.1:5001/daq/state", true)
-    request.send()
+    request.open("GET", "http://127.0.0.1:5001/daq/state", true);
+    request.send();
 }
 
 function start_daq(daqStateElementId) {
@@ -22,8 +22,8 @@ function start_daq(daqStateElementId) {
             get_daq_state(daqStateElementId);
         }
     }
-    request.open("GET", "http://127.0.0.1:5001/daq/start", true)
-    request.send()
+    request.open("GET", "http://127.0.0.1:5001/daq/start", true);
+    request.send();
 }
 
 function stop_daq(daqStateElementId) {
@@ -33,8 +33,8 @@ function stop_daq(daqStateElementId) {
             get_daq_state(daqStateElementId);
         }
     }
-    request.open("GET", "http://127.0.0.1:5001/daq/stop", true)
-    request.send()
+    request.open("GET", "http://127.0.0.1:5001/daq/stop", true);
+    request.send();
 }
 
 function reset_daq_error(daqStateElementId) {
@@ -44,8 +44,27 @@ function reset_daq_error(daqStateElementId) {
             get_daq_state(daqStateElementId);
         }
     }
-    request.open("GET", "http://127.0.0.1:5001/daq/resetError", true)
-    request.send()
+    request.open("GET", "http://127.0.0.1:5001/daq/resetError", true);
+    request.send();
+}
+
+function update_table(tableElementId) {
+    var request = new XMLHttpRequest();
+    request.onreadystatechange = function () {
+        if (this.readyState == 4){
+            var data = JSON.parse(this.responseText);
+            var rows = ""
+            data["data"].forEach(value => {
+                var row = "<tr>"
+                row += "<td>" + toString(value.name) + "</td>" + "<td>" + toString(value.value) + "</td>" 
+                rows += row + "</tr>"
+            });
+            document.getElementById(tableElementId).innerHTML = rows
+            // $('#' + tableElementId).html(rows);
+        }
+    }
+    request.open("GET", "http://127.0.0.1:5001/daq/getCurrentKeysAndValues", true);
+    request.send();
 }
 
 // DAQ Plot

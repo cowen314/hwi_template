@@ -112,7 +112,7 @@ class DaqEngine:
 
             # (2) publish to the buffer engine
             for channel_name, values in data.items():
-                self._buffer_engine.write(build_key(channel_name, driver_name=driver.name), values, synchronous=False)
+                self._buffer_engine.write(build_key(channel_name, driver_name=driver.name), values)
 
     def _handle_daq_messsage(self, message):
         message.execute(self)
