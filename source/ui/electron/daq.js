@@ -51,12 +51,12 @@ function reset_daq_error(daqStateElementId) {
 function update_table(tableElementId) {
     var request = new XMLHttpRequest();
     request.onreadystatechange = function () {
-        if (this.readyState == 4){
+        if (this.readyState == 4 && this.status == 200){
             var data = JSON.parse(this.responseText);
             var rows = ""
             data["data"].forEach(value => {
                 var row = "<tr>"
-                row += "<td>" + toString(value.name) + "</td>" + "<td>" + toString(value.value) + "</td>" 
+                row += "<td>" + value.name + "</td>" + "<td>" + value.value + "</td>" 
                 rows += row + "</tr>"
             });
             document.getElementById(tableElementId).innerHTML = rows

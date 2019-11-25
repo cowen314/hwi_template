@@ -4,6 +4,7 @@ from ....engines.daq_engine import DaqEngine
 from ....engines.data_buffer_engine import BufferEngine
 from ....drivers.daq_drivers import SimulatedDaqDriver
 from transitions.core import MachineError
+import json
 from ....messaging import PubSubMessageCenter
 
 # class FlaskLauncher:
@@ -66,8 +67,17 @@ def daq_state():
 @app.route("/daq/getCurrentKeysAndValues")
 def get_keys_and_values():
     be = buffer_engine.get_all_keys_and_values()
+    a = []
+    for i in be:
+        a.append({
+            "name": i[0],
+            "value": i[1][0].value
+        })
+        # a.append((i[0], json.dumps(i[1].__dict__, default=lambda o: o.__dict__, indent=4)))  # OK, so this is totally cheating. We need a good way to
+        # a.append((i[0], i[1]))
+    # d = json.dumps(be, default=lambda o: o.__dict__, indent=4)
     return {
-        "data": buffer_engine.get_all_keys_and_values()
+        "data": a
     }
 
 
