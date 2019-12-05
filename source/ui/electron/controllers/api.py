@@ -6,14 +6,13 @@ from ....drivers.daq_drivers import SimulatedDaqDriver
 from transitions.core import MachineError
 import json
 from ....messaging import PubSubMessageCenter
-
-# class FlaskLauncher:
-#     def __init__(self):
+from typing import List, Tuple
+from queue import Queue
 
 app = Flask(__name__)
 buffer_engine = BufferEngine()
 daq_engine = DaqEngine("daq engine", [SimulatedDaqDriver("sim daq driver")], buffer_engine)
-
+plot_subscriptions : List[Tuple[str, Queue]] = []
 
 @app.route("/")
 def main():
@@ -79,6 +78,30 @@ def get_keys_and_values():
     return {
         "data": a
     }
+
+
+@app.route("/daq/startPlotBuffering")
+def start_buffering():
+    buffer_engine.close_all_subscriptions()  # this is precautionary. Remove when other entities use the buffer engine.
+    # TODO replace with many calls to buffer_engine.close_subscription()
+    keys = buffer_engine.get_all_keys()
+    for k in keys:
+        queue = buffer_engine.create_subscription(k)
+        plot_subscriptions.append((k, queue))
+
+
+@app.route("/daq/stopPlotBuffering")
+def stop_buffering():
+    # TODO replace with many calls to buffer_engine.close_subscription()
+    buffer_engine.close_all_subscriptions()
+
+
+@app.route("/daq/getBufferedData")
+def get_buffered_data():
+    # TODO
+    data = ()
+    for key, queue in plot_subscriptions:
+        pass
 
 
 if __name__ == "__main__":
