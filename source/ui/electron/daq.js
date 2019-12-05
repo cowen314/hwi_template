@@ -71,27 +71,33 @@ function update_table(tableElementId) {
 // var Plotly = require("plotly.js-dist")
 function generate_plot(plotElementId) {
     var Plotly = require("plotly.js-dist")
-    var trace1 = {
-        x: [1, 2, 3, 4],
-        y: [10, 15, 13, 17],
-        type: 'scatter',
-      };
-      
-      var trace2 = {
-        x: [1, 2, 3, 4],
-        y: [16, 5, 11, 9],
-        type: 'scatter'
-      };
-      
-      var data = [trace1, trace2];
-      
-    //   Plotly.plot()
-    TESTER = document.getElementById(plotElementId);
-      Plotly.plot( TESTER, [{
-        x: [1, 2, 3, 4, 5],
-        y: [1, 2, 4, 8, 16] }], { 
-        margin: { t: 0 } }, {showSendToCloud:true} );
+    // var trace1 = {
+    //     x: [1, 2, 3, 4],
+    //     y: [10, 15, 13, 17],
+    //     type: 'scatter',
+    //   };
+    //   var trace2 = {
+    //     x: [1, 2, 3, 4],
+    //     y: [16, 5, 11, 9],
+    //     type: 'scatter'
+    //   };
+    // var data = [trace1, trace2];
     //   Plotly.newPlot(plotElementId, data, {}, {showSendToCloud: true});
+
+    var request = new XMLHttpRequest();
+    request.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200){
+            
+        }
+    }
+    request.open("GET", "http://127.0.0.1:5001/daq/stop", true);
+    request.send();
+
+    TESTER = document.getElementById(plotElementId);
+    Plotly.plot( TESTER, [{
+    x: [1, 2, 3, 4, 5],
+    y: [1, 2, 4, 8, 16] }], { 
+    margin: { t: 0 } }, {showSendToCloud:true} );
 }
 
   
