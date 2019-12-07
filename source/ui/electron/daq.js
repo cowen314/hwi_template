@@ -87,17 +87,18 @@ function generate_plot(plotElementId) {
     var request = new XMLHttpRequest();
     request.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200){
-            
+            var data = JSON.parse(this.responseText);
+            data.
+            TESTER = document.getElementById(plotElementId);
+            Plotly.plot( TESTER, [{
+            x: [1, 2, 3, 4, 5],
+            y: [1, 2, 4, 8, 16] }], { 
+            margin: { t: 0 } }, {showSendToCloud:true} );
         }
     }
-    request.open("GET", "http://127.0.0.1:5001/daq/stop", true);
+    request.open("GET", "http://127.0.0.1:5001/daq/getBufferedData", true);
     request.send();
 
-    TESTER = document.getElementById(plotElementId);
-    Plotly.plot( TESTER, [{
-    x: [1, 2, 3, 4, 5],
-    y: [1, 2, 4, 8, 16] }], { 
-    margin: { t: 0 } }, {showSendToCloud:true} );
 }
 
   

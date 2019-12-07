@@ -1,13 +1,10 @@
 from abc import abstractmethod
 import random
-from typing import Dict, Iterable
+from typing import Dict, Iterable, Tuple
 from datetime import datetime
 
-
-class ReadData:
-    def __init__(self, timestamp: datetime, value: float):
-        self.timestamp = timestamp
-        self.value = value
+# wrapping this data into a class made serialization more difficult. The type alias seems to work nicely.
+ReadData = Tuple[datetime, float]
 
 
 class _DaqDriver(object):
@@ -46,8 +43,8 @@ class SimulatedDaqDriver(_DaqDriver):
 
     def read_data(self) -> Dict[str, Iterable[ReadData]]:
         return {
-            "simulated channel": [ReadData(datetime.now(), random.random())],
-            "simulated channel 2": [ReadData(datetime.now(), random.random())]
+            "simulated channel": [(datetime.now(), random.random())],
+            "simulated channel 2": [(datetime.now(), random.random())]
         }
 
     def write_data(self, data):

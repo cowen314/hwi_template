@@ -2,17 +2,18 @@ from flask import Flask, Response
 from .sample_engine import SampleEngine
 from ....engines.daq_engine import DaqEngine
 from ....engines.data_buffer_engine import BufferEngine
-from ....drivers.daq_drivers import SimulatedDaqDriver
+from ....drivers.daq_drivers import SimulatedDaqDriver, ReadData
 from transitions.core import MachineError
 import json
 from ....messaging import PubSubMessageCenter
-from typing import List, Tuple
+from typing import List, Tuple, Iterable
 from queue import Queue
 
 app = Flask(__name__)
 buffer_engine = BufferEngine()
 daq_engine = DaqEngine("daq engine", [SimulatedDaqDriver("sim daq driver")], buffer_engine)
-plot_subscriptions : List[Tuple[str, Queue]] = []
+plot_subscriptions: List[Tuple[str, Queue]] = []
+
 
 @app.route("/")
 def main():
@@ -65,18 +66,15 @@ def daq_state():
 
 @app.route("/daq/getCurrentKeysAndValues")
 def get_keys_and_values():
-    be = buffer_engine.get_all_keys_and_values()
-    a = []
+    be = buffer_engine.get_all_keys_and_values()  # TODO consider adding filtering by type here
+    data = []
     for i in be:
-        a.append({
+        data.append({
             "name": i[0],
-            "value": i[1][0].value
+            "value": i[1][0]
         })
-        # a.append((i[0], json.dumps(i[1].__dict__, default=lambda o: o.__dict__, indent=4)))  # OK, so this is totally cheating. We need a good way to
-        # a.append((i[0], i[1]))
-    # d = json.dumps(be, default=lambda o: o.__dict__, indent=4)
     return {
-        "data": a
+        "data": data
     }
 
 
@@ -88,20 +86,25 @@ def start_buffering():
     for k in keys:
         queue = buffer_engine.create_subscription(k)
         plot_subscriptions.append((k, queue))
+    return ""
 
 
 @app.route("/daq/stopPlotBuffering")
 def stop_buffering():
     # TODO replace with many calls to buffer_engine.close_subscription()
     buffer_engine.close_all_subscriptions()
+    return ""
 
 
 @app.route("/daq/getBufferedData")
 def get_buffered_data():
-    # TODO
-    data = ()
+    # "keyName": "key"
+    # "values": [...]
+    data = {}
     for key, queue in plot_subscriptions:
-        pass
+        data[key] = list(queue.queue)
+        queue.queue.clear()  # this might drop a sample here and there, but should be fine for display purposes
+    return data
 
 
 if __name__ == "__main__":
