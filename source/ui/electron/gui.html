@@ -57,18 +57,6 @@
         <!-- <button onclick="get_daq_state('daq_state_indicator')">Read DAQ State</button> -->
         <button id="buffer_button" onclick="start_buffering()">Start Plotting</button>
         <script>
-            function start_buffering(){
-                var request = new XMLHttpRequest();
-                var buffer_button_element = document.getElementById("buffer_button");
-                request.onreadystatechange = function () {
-                    if (this.readyState == 4 && this.status == 200){
-                        buffer_button_element.innerHTML = (buffer_button_element.innerHTML == "Stop Plotting") ?  "Start Plotting" : "Stop Plotting";
-                    }
-                }
-                var url = (buffer_button_element.innerHTML == "Stop Plotting") ? "http://127.0.0.1:5001/daq/stopPlotBuffering" : "http://127.0.0.1:5001/daq/startPlotBuffering";
-                request.open("GET", url, true);
-                request.send();
-            }
         </script>
         <button onclick="generate_plot('daq_plot')">Update Plot</button>
     </div>

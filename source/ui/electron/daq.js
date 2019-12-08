@@ -88,9 +88,14 @@ function generate_plot(plotElementId) {
     request.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200){
             var data = JSON.parse(this.responseText);
-            data.
+            var plotData = []
+            for (i in data){
+                data[i].forEach(value => {
+                    plotData.concat({name: i, x: x, y: y})
+                });
+            }
             TESTER = document.getElementById(plotElementId);
-            Plotly.plot( TESTER, [{
+            Plotly.newPlot( TESTER, [{
             x: [1, 2, 3, 4, 5],
             y: [1, 2, 4, 8, 16] }], { 
             margin: { t: 0 } }, {showSendToCloud:true} );
@@ -101,5 +106,17 @@ function generate_plot(plotElementId) {
 
 }
 
+function start_buffering(){
+    var request = new XMLHttpRequest();
+    var buffer_button_element = document.getElementById("buffer_button");
+    request.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200){
+            buffer_button_element.innerHTML = (buffer_button_element.innerHTML == "Stop Plotting") ?  "Start Plotting" : "Stop Plotting";
+        }
+    }
+    var url = (buffer_button_element.innerHTML == "Stop Plotting") ? "http://127.0.0.1:5001/daq/stopPlotBuffering" : "http://127.0.0.1:5001/daq/startPlotBuffering";
+    request.open("GET", url, true);
+    request.send();
+}
   
   

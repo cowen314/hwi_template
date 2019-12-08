@@ -98,12 +98,32 @@ def stop_buffering():
 
 @app.route("/daq/getBufferedData")
 def get_buffered_data():
+    """
+    return something with this syntax:
+        ReturnType = Dict[keyName: str, PlotItem] where PlotItem = Dict[str(either `x` or `y`), List[float?]]
+    """
     # "keyName": "key"
     # "values": [...]
     data = {}
+    # for key, queue in plot_subscriptions:
+    #     data[key] = map(lambda x: x., queue)
     for key, queue in plot_subscriptions:
-        data[key] = list(queue.queue)
+        # data[key] = map(list, zip(*list(queue.queue)))  # convert list of tuples to separate lists
+        # s = zip(*list(queue.queue))
+        # data[key] = {
+        #     "x": list(s[0]),
+        #     "y": list(s[1])
+        # }
+        # FIXME the below implementation is poor, update it for better performance
+        channel_data = {
+            "x": [],
+            "y": []
+        }
+        for item in list(queue.queue):
+            channel_data["x"].append(item[0])
+            channel_data["y"].append(item[1])
         queue.queue.clear()  # this might drop a sample here and there, but should be fine for display purposes
+        data[key] = channel_data
     return data
 
 
