@@ -8,7 +8,7 @@ from transitions import Machine
 from abc import ABCMeta, abstractmethod
 
 
-"""This file is mostly just an example of how an engine might be used"""
+"""This file is an example of how an engine could be used"""
 # TODO add a messaging example
 
 
@@ -25,39 +25,59 @@ class TemplateEngineEvents(Enum):
     disconnect_requested = 1
 
 
-class _EngineTemplate:
-    # states = ['disconnected', 'connected']  # leaving this here to remind one that states can also just be strings
+class EngineTemplate:
 
     def __init__(self, name, driver, connected_callback, disconnected_callback):
+        # TODO add type annotations to constructor parameters
         self.name = name
         self.machine = Machine(model=self, states=[i.name for i in TemplateEngineStates], initial=TemplateEngineStates.DISCONNECTED.name)
         self.machine.add_transition(
-            trigger='connect_succeeded',
+            trigger='_connect_succeeded',
             source=TemplateEngineStates.DISCONNECTED.name,
             dest=TemplateEngineStates.CONNECTED.name,
+            conditions=self._attempt_connection,
             after=connected_callback
         )
         self.machine.add_transition(
-            trigger='disconnect_succeeded',
+            trigger='_disconnect_succeeded',
+            before=self._disconnect,
             source=TemplateEngineStates.CONNECTED.name,
             dest=TemplateEngineStates.DISCONNECTED.name,
             after=disconnected_callback
         )
 
-    def connect(self):
+    """BEGIN TRANSITION HELPER METHODS"""
+    # define transition helper methods here for all public transitions. These helpers:
+    # - help enable auto complete
+    # - provide an explicit declaration of "public" transitions
+    # - decoration of transitions
+    # - should NOT contain anything that depends on state
+
+    def connect_requested(self):
+        self._connect_succeeded()
+
+    def disconnect_requested(self):
+        self._disconnect_succeeded()
+
+    """END TRANSITION HELPER METHODS"""
+
+    def _attempt_connection(self):
+        """
+        :return: True if connection attempt succeeds, False otherwise
+        """
         print("Attempting to connect")
         time.sleep(1)
         if random() > 0.5:
             print("Connect succeeded")
-            self.connect_succeeded(self)
+            return True
         else:
             print("Connect failed")
+            return False
 
-    def disconnect(self):
+    def _disconnect(self):
         print("Attempting to disconnect")
         time.sleep(1)
         print("Disconnect succeeded")
-        self.disconnect_succeeded(self)
 
 
 '''
@@ -80,5 +100,5 @@ if __name__ == "__main__":
     def generic_disconnect_callback(device):
         print("Callback: %s disconnected" % device.name)
 
-    d = _EngineTemplate("test", generic_connect_callback, generic_disconnect_callback)
+    d = EngineTemplate("test", generic_connect_callback, generic_disconnect_callback)
     print("OK")
