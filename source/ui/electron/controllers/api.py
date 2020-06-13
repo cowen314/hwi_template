@@ -1,4 +1,5 @@
 from flask import Flask, Response
+from flask_socketio import SocketIO, join_room, emit, send
 from .sample_engine import SampleEngine
 from ....engines.daq_engine import DaqEngine
 from ....engines.data_buffer_engine import BufferEngine
@@ -10,6 +11,7 @@ from typing import List, Tuple, Iterable
 from queue import Queue
 
 app = Flask(__name__)
+socketio = SocketIO(app)
 buffer_engine = BufferEngine()
 daq_engine = DaqEngine("daq engine", [SimulatedDaqDriver("sim daq driver")], buffer_engine)
 plot_subscriptions: List[Tuple[str, Queue]] = []
@@ -18,6 +20,11 @@ plot_subscriptions: List[Tuple[str, Queue]] = []
 @app.route("/")
 def main():
     return "test"
+
+
+@socketio.on('test')
+def test_from_client(data):
+    print("Socket message received from server: %s" % data)
 
 
 @app.route("/data_example")
@@ -127,6 +134,9 @@ def get_buffered_data():
     return data
 
 
+
+
+
 if __name__ == "__main__":
     print("about to start the flask app...")
-    app.run(host="127.0.0.1", port=5001)
+    socketio.run(host="127.0.0.1", port=5001)
