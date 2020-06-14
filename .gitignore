@@ -1,5 +1,6 @@
 /venv_common
 /.idea
+/.vscode
 
 !/.idea/runConfigurations
 /venv/
