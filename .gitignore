@@ -6,6 +6,7 @@
 /venv/
 
 /source/ui/electron/node_modules/
+/source/ui/electron/package-lock.json
 
 # Standard stuff:
 

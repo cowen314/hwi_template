@@ -18,3 +18,9 @@ store.dispatch({
 });
 
 // TODO dispatch action on inbound socket.io message
+var socket = io.connect('http://127.0.0.1:5001');
+// verify our websocket connection is established
+socket.on('connect', function() {
+    console.log('Websocket connected!');
+    // TODO request full state (HTTP GET) and run full state through cvt()
+});

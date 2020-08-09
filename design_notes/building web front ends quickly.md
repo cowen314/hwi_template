@@ -43,7 +43,47 @@ Implementation thoughts:
     - need to figure out how to trigger re-renders on state updates
 - Facebook's https://github.com/facebook/create-react-app seems helpful
 - Will this work for things that are updated on the front end? What would push front end inputs to the back end?
-    - if we can assume that front end input will be event driven, then we can share the probably call a reducer that updates the CVT and pushes the changed data down to the back end CVT  
+    - if we can assume that front end input will be event driven, then we can share the probably call a reducer that updates the CVT and pushes the changed data down to the back end CVT
+
+TODO
+
+- Get the redux counter example working 
+
+
+Redux
+
+- reducers : functions that take an action and the old state and return a new (updated) state
+- actions : things that define how the state should be modified
+
+React + Redux
+
+- The entire React app is wrapped by a provider object, which provides the Redux store to the React app
+- each React component is run through a Redux function that wraps the React component (reactComponent) => reactComponent
+    - there is a standard Redux function collect() that takes two functions as parameters (both are optional)
+        - the first parameter/function define how store data is mapped to specific component properties
+        - the second parameter/function is confusing and i'll come back to it
+    - collect() returns another function which can be used to wrap React components
+
+tutorial notes:
+
+- there are three react components
+    - one to create new TODOs, one for TODO items, one to change visibility settings, and one to store a list of TODOs
+- the state
+    - the todos
+    - visibility
+    -  
+- the actions
+    - create a new todo
+    - change vis
+    - 
+
+questions/thoughts:
+
+- how are events handled?
+    - see controlled component section of the React tutorial
+    - seems like an action is 'dispatched' ('dispatch' seems to be the standard Redux terminology)
+    - an action is somehow routed to a reducer, which updates the state
+    - somehow, component properties are mapped to the state of the 
 
 
 ### Backend-frontend datatype synchronization
