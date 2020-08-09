@@ -20,6 +20,10 @@
     "electron": "^7.0.0"
   },
   "dependencies": {
-    "plotly.js-dist": "^1.51.0"
+    "plotly.js-dist": "^1.51.0",
+    "react": "^16.13.1",
+    "react-redux": "^7.2.0",
+    "redux": "^4.0.5",
+    "socket.io": "^2.3.0"
   }
 }
