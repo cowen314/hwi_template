@@ -1,7 +1,7 @@
 from enum import Enum
 from transitions import Machine
 from ._engines_shared import DATA_TOPIC, _EngineMessage
-from ..messaging import PubSubMessageCenter
+from source.messaging import PubSubMessageCenter
 
 
 LOGGER_MESSAGE_TOPIC = "logger"

@@ -18,11 +18,6 @@ function createWindow () {
     }
   })
 
-  // start the python process
-  // var subpy = require('child_process').spawn('python', ['../engine/source/api.py']);
-  // var rq = require('request-promise');  // not clear on what this does
-  // var mainAddr = 'http://localhost:5001';
-
   // and load the index.html of the app.
   mainWindow.loadFile('gui.html')
 

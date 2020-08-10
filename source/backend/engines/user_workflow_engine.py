@@ -3,11 +3,11 @@ from enum import Enum
 from pathlib import Path
 from transitions import Machine
 
-from source.drivers.data_logging_drivers import FileLoggingSession
+from source.backend.drivers.data_logging_drivers import FileLoggingSession
 from ..engines.daq_engine import DAQ_MESSAGE_TOPIC, StartDaqMessage, StopDaqMessage
 from ..engines.logger_engine import LOGGER_MESSAGE_TOPIC, LoggerStartMessage, LoggerStopMessage
-from ..messaging import PubSubMessageCenter
-from ..application_parameters.application_parameter_sections import UserParameters
+from source.messaging import PubSubMessageCenter
+from source.backend.application_parameters.application_parameter_sections import UserParameters
 
 
 class UserWorflowStates(Enum):

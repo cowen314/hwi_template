@@ -4,8 +4,8 @@ from PySide2.QtGui import QGuiApplication
 from PySide2.QtQml import QQmlApplicationEngine
 from PySide2.QtCore import QUrl
 from source.ui.qml.controllers.simple_daq_controllers import LoginController
-from source.application_parameters.application_parameters import LocalFileParameters
-from source.engines.user_workflow_engine import UserWorkflowEngine
+from source.backend.application_parameters.application_parameters import LocalFileParameters
+from source.backend.engines.user_workflow_engine import UserWorkflowEngine
 
 
 if __name__ == '__main__':

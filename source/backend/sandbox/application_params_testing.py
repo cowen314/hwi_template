@@ -1,5 +1,5 @@
-from source.application_parameters.application_parameters import LocalFileParameters
-from source.application_parameters.application_parameter_sections import UserParameters
+from source.backend.application_parameters.application_parameters import LocalFileParameters
+from source.backend.application_parameters.application_parameter_sections import UserParameters
 
 
 if __name__ == "__main__":

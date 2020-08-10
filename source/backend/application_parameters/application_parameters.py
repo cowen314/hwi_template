@@ -1,10 +1,9 @@
-from abc import abstractmethod, ABC
+from abc import abstractmethod
 from pathlib import Path
 from source.constants import APP_NAME, GROUP_NAME, CONFIG_FILE_DIRECTORY
 import json
 from threading import Lock
-from source.application_parameters.application_parameter_sections import ALL_PARAMETERS
-from collections import namedtuple
+from source.backend.application_parameters.application_parameter_sections import ALL_PARAMETERS
 
 
 class _ApplicationParameters:

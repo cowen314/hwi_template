@@ -1,5 +1,5 @@
-from source.engines.user_workflow_engine import UserWorkflowEngine
-from source.application_parameters.application_parameters import LocalFileParameters
+from source.backend.engines.user_workflow_engine import UserWorkflowEngine
+from source.backend.application_parameters.application_parameters import LocalFileParameters
 import pinject
 from dependency_injector import containers
 from dependency_injector import providers

@@ -2,13 +2,11 @@ import unittest
 import requests
 import datetime
 
-from source.application_parameters.application_parameters import LocalFileParameters
 from source.messaging import PubSubMessageCenter
-from source.engines.daq_engine import DaqEngine
-from source.drivers.daq_drivers import SimulatedDaqDriver
+from source.backend.engines.daq_engine import DaqEngine
+from source.backend.drivers.daq_drivers import SimulatedDaqDriver
 from transitions.core import MachineError
-from source.engines.template_engine import EngineTemplate
-from source.ui.electron.controllers.api import app as electron_app
+from source.ui.web.controllers.api import app as electron_app
 
 
 class TestMessagingClasses(unittest.TestCase):
@@ -77,7 +75,7 @@ class TestDaqEngine(unittest.TestCase):
 
 class TestElectronApi(unittest.TestCase):
     def get_state_benchmark(self):
-        # TODO refactor launching of the electron app so that we can pass depends in
+        # TODO refactor launching of the web app so that we can pass depends in
         electron_app.run()
         t1 = datetime.datetime.now()
         state = requests.get('127.0.0.1/daq/state')

@@ -1,13 +1,11 @@
-from flask import Flask, Response
-from flask_socketio import SocketIO, join_room, emit, send
+from flask import Flask
+from flask_socketio import SocketIO
 from .sample_engine import SampleEngine
-from ....engines.daq_engine import DaqEngine
-from ....engines.data_buffer_engine import BufferEngine
-from ....drivers.daq_drivers import SimulatedDaqDriver, ReadData
+from source.backend.engines.daq_engine import DaqEngine
+from source.backend.engines.data_buffer_engine import BufferEngine
+from source.backend.drivers.daq_drivers import SimulatedDaqDriver
 from transitions.core import MachineError
-import json
-from ....messaging import PubSubMessageCenter
-from typing import List, Tuple, Iterable
+from typing import List, Tuple
 from queue import Queue
 
 app = Flask(__name__)
@@ -132,9 +130,6 @@ def get_buffered_data():
         queue.queue.clear()  # this might drop a sample here and there, but should be fine for display purposes
         data[key] = channel_data
     return data
-
-
-
 
 
 if __name__ == "__main__":

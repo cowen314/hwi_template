@@ -1,4 +1,4 @@
-from ..messaging import _MessageCenter, PubSubMessageCenter
+from source.messaging import _MessageCenter, PubSubMessageCenter
 from abc import abstractmethod
 from queue import Queue
 from typing import List, Dict, Any, Tuple, Iterable, Generic, TypeVar
