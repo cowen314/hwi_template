@@ -7,7 +7,6 @@ To run the app:
 - run electron (`npm run electron`)
 - run the Python application #WIP
 
-
 ### React and Electron 
 
 They don't play together, immediately. There are some good resources on this [here](https://jsmanifest.com/create-your-first-react-desktop-application-in-electron-with-hot-reload/) and [here](https://medium.com/@johndyer24/building-a-production-electron-create-react-app-application-with-shared-code-using-electron-builder-c1f70f0e2649).
