@@ -20,6 +20,7 @@
     "electron": "^7.0.0"
   },
   "dependencies": {
+    "create-react-app": "^3.4.1",
     "plotly.js-dist": "^1.51.0",
     "react": "^16.13.1",
     "socket.io": "^2.3.0"

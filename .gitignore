@@ -6,7 +6,6 @@
 /venv/
 
 /source/ui/web/node_modules/
-/source/ui/web/package-lock.json
 
 # Standard stuff:
 
