@@ -1,8 +1,34 @@
-# electron-quick-start
+# Web UI
+
+To run the app:
+
+- enter the react-app directory (`cd react-app`)
+- run the react app (`npm start`)
+- run electron (`npm run electron`)
+- run the Python application #WIP
+
+
+### React and Electron 
+
+They don't play together, immediately. There are some good resources on this [here](https://jsmanifest.com/create-your-first-react-desktop-application-in-electron-with-hot-reload/) and [here](https://medium.com/@johndyer24/building-a-production-electron-create-react-app-application-with-shared-code-using-electron-builder-c1f70f0e2649).
+
+Preliminary steps for getting them to play together: 
+
+1. Use create-react-app to configure base React app
+2. Install electron
+4. Update scripts section of `package.json` so that the browser doesn't show up when running `npm start`
+5. Add command to scripts section of `package.json` to start electron
+    - e.g. `"electron": "electron ."`
+3. Configure the startup script (`startup.js`) to create the electron window. Add `"main": "src/startup.js"` to package.json. 
+1. Install `electron-is-dev`. Use it to tell electron to look at the NodeJS + webpack server (which runs with `npm start`) when in the development context, or `index.html` in the builds folder when in the build context.  
+
+---
+
+# electron-quick-start - GENERIC
 
 **Clone and run for a quick way to see Electron in action.**
 
-This is a minimal Electron application based on the [Quick Start Guide](https://electronjs.org/docs/tutorial/quick-start) within the Electron documentation.
+[Quick Start Guide](https://electronjs.org/docs/tutorial/quick-start) 
 
 **Use this app along with the [Electron API Demos](https://electronjs.org/#get-started) app for API code examples to help you get started.**
 
@@ -13,23 +39,6 @@ A basic Electron application needs just these files:
 - `index.html` - A web page to render. This is the app's **renderer process**.
 
 You can learn more about each of these components within the [Quick Start Guide](https://electronjs.org/docs/tutorial/quick-start).
-
-## To Use
-
-To clone and run this repository you'll need [Git](https://git-scm.com) and [Node.js](https://nodejs.org/en/download/) (which comes with [npm](http://npmjs.com)) installed on your computer. From your command line:
-
-```bash
-# Clone this repository
-git clone https://github.com/electron/electron-quick-start
-# Go into the repository
-cd electron-quick-start
-# Install dependencies
-npm install
-# Run the app
-npm start
-```
-
-Note: If you're using Linux Bash for Windows, [see this guide](https://www.howtogeek.com/261575/how-to-run-graphical-linux-desktop-applications-from-windows-10s-bash-shell/) or use `node` from the command prompt.
 
 ## Resources for Learning Electron
 
