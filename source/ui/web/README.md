@@ -13,7 +13,7 @@ They don't play together, immediately. There are some good resources on this [he
 
 Preliminary steps for getting them to play together: 
 
-1. Use create-react-app to configure base React app
+1. Use [Create React App](https://github.com/facebook/create-react-app) bootstrap the base React app
 2. Install electron
 4. Update scripts section of `package.json` so that the browser doesn't show up when running `npm start`
 5. Add command to scripts section of `package.json` to start electron
