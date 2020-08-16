@@ -8,7 +8,7 @@ class HomeTab extends React.Component {
     // this.state = {date: new Date(), count: 0};
   }
 
-  render(props) {
+  render (props) {
     return <>
       <div>
         <DateAndCounter />
@@ -23,15 +23,14 @@ class HomeTab extends React.Component {
   };
 };
 
-
 class ValueTable extends React.Component {
-  constructor(props) {
-    super(props);
+  constructor (props) {
+    super(props)
   }
 
   // How do I generate HTML programatically?
   // Eventually, populate the table with whatever initial variables and values are passed in to the constructor
-  // on ComponentDidMount() of the HomeTab component, fetch all available keys  
+  // on ComponentDidMount() of the HomeTab component, fetch all available keys
 
   render (props) {
     return <>
@@ -43,64 +42,61 @@ class ValueTable extends React.Component {
           </tr>
         </thead>
       </table>
-    </>;
+    </>
   }
 }
 
-function AAdder() {
-  const [text, setText] = useState('initial');  // returns a state "thing" (variable?) and a function to set that thing 
+function AAdder () {
+  const [text, setText] = useState('initial') // returns a state "thing" (variable?) and a function to set that thing
   return <>
     <button onClick={() => setText(text+'a')}>Test</button>
     <p>{text}</p>
   </>
 }
 
-
-function SingleValue(props) {
-  const value = useNumericValue(props.key, props.socket);
+function SingleValue (props) {
+  const value = useNumericValue(props.key, props.socket)
   return <>
     <p>{value}</p>
   </>
 }
 
-
-function useNumericValue(key, socket) {
-  const [value, setValue] = useState(-1);
+function useNumericValue (key, socket) {
+  const [value, setValue] = useState(-1)
 
   useEffect(() => {
     // check to see if a connection already exists
-    socket.on(key, (value) => setValue(value));
+    socket.on(key, (value) => setValue(value))
     // maybe return a function to cleanup the connection?
-  });
-  return value;
+  })
+  return value
 }
 
-
 class DateAndCounter extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {date: new Date(), count: 0};
+  constructor (props) {
+    super(props)
+    this.state = { date: new Date(), count: 0 }
 
     // be sure to bind callbacks to the class! (this lets you refer to them as 'this.<method_name>')
-    this.handleButtonPress = this.handleButtonPress.bind(this);
+    this.handleButtonPress = this.handleButtonPress.bind(this)
   }
 
-  handleButtonPress() {
+  handleButtonPress () {
     this.setState(state => ({
-      date : state.date,
-      count : ++state.count
-    }));
+      date: state.date,
+      count: ++state.count
+    }))
   }
-    
-  render(props) { 
+
+  render (props) {
     return <>
       <p>
             The date is {this.state.date.toDateString()} <br/>
             The button has been pressed {this.state.count} times
       </p>
       <button onClick={this.handleButtonPress}>Press here</button>
-    </>;
+    </>
   };
 }
 
-export default HomeTab;
+export default HomeTab
