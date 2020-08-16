@@ -1,9 +1,11 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import HomeTab from './components/HomeTab';
+import React from 'react'
+import logo from './logo.svg'
+import './App.css'
+import HomeTab from './components/HomeTab'
+import io from 'socket.io-client'
 
-function App() {
+function App () {
+  const socket = io.connect('http://localhost:5001')
   return (
     <div className="App">
       <header className="App-header">
@@ -21,11 +23,11 @@ function App() {
         </a>
       </header>
       <body>
-        <HomeTab name="Test"/>
+        <HomeTab socket={socket} name="Test"/>
       </body>
 
     </div>
-  );
+  )
 }
 
-export default App;
+export default App

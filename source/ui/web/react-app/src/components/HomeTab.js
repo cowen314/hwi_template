@@ -1,11 +1,9 @@
 /* eslint-disable no-useless-constructor */
 import React, { Component, useState, useEffect } from 'react'
-import io from 'socket.io-client'
 
 class HomeTab extends React.Component {
   constructor (props) {
     super(props)
-    // this.state = {date: new Date(), count: 0};
   }
 
   render (props) {
@@ -16,7 +14,7 @@ class HomeTab extends React.Component {
       <div>
         <ValueTable />
         <AAdder />
-        <SigleValue socket={io('127.0.0.1:5001')}/> //
+        <SingleValue socket={props.socket} key="testKey"/>
       </div>
 
     </>
