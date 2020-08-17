@@ -6,7 +6,7 @@ class HomeTab extends React.Component {
     super(props)
   }
 
-  render (props) {
+  render () {
     return <>
       <div>
         <DateAndCounter />
@@ -14,7 +14,7 @@ class HomeTab extends React.Component {
       <div>
         <ValueTable />
         <AAdder />
-        <SingleValue socket={props.socket} key="testKey"/>
+        <SingleValue socket={this.props.socket} key="testKey"/>
       </div>
 
     </>
@@ -53,13 +53,13 @@ function AAdder () {
 }
 
 function SingleValue (props) {
-  const value = useNumericValue(props.key, props.socket)
+  const value = useNumericValue(props.socket, props.key)
   return <>
     <p>{value}</p>
   </>
 }
 
-function useNumericValue (key, socket) {
+function useNumericValue (socket, key) {
   const [value, setValue] = useState(-1)
 
   useEffect(() => {

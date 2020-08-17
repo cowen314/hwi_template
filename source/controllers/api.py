@@ -1,5 +1,5 @@
 from flask import Flask
-from flask_socketio import SocketIO
+from flask_socketio import SocketIO, send, emit
 from .sample_engine import SampleEngine
 from source.backend.engines.daq_engine import DaqEngine
 from source.backend.engines.data_buffer_engine import BufferEngine
@@ -7,6 +7,8 @@ from source.backend.drivers.daq_drivers import SimulatedDaqDriver
 from transitions.core import MachineError
 from typing import List, Tuple
 from queue import Queue
+import time
+from threading import Thread
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -23,6 +25,25 @@ def main():
 @socketio.on('test')
 def test_from_client(data):
     print("Socket message received from server: %s" % data)
+
+
+def send_socket_test_messages():
+    print("starting test transmissions...")
+    for i in range(1, 5):
+        emit("testKey", {"value": i})
+        time.sleep(3)
+
+
+@socketio.on('connect')
+def handle_connect():
+    print("Client connected, starting test message thread")
+    test_message_thread = Thread(target=send_socket_test_messages)
+    test_message_thread.start()
+
+
+@socketio.on('disconnect')
+def handle_disconnect():
+    print("Client disconnected")
 
 
 @app.route("/data_example")
