@@ -1,5 +1,5 @@
 /* eslint-disable no-useless-constructor */
-import React, { Component, useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 
 class HomeTab extends React.Component {
   constructor (props) {
@@ -15,6 +15,7 @@ class HomeTab extends React.Component {
         <ValueTable />
         <AAdder />
         <SingleValue socket={this.props.socket} key="testKey"/>
+        <SocketTestButton socket={this.props.socket}/>
       </div>
 
     </>
@@ -47,7 +48,7 @@ class ValueTable extends React.Component {
 function AAdder () {
   const [text, setText] = useState('initial') // returns a state "thing" (variable?) and a function to set that thing
   return <>
-    <button onClick={() => setText(text+'a')}>Test</button>
+    <button onClick={() => setText(text + 'a')}>Test</button>
     <p>{text}</p>
   </>
 }
@@ -56,6 +57,12 @@ function SingleValue (props) {
   const value = useNumericValue(props.socket, props.key)
   return <>
     <p>{value}</p>
+  </>
+}
+
+function SocketTestButton (props) {
+  return <>
+    <button onClick={() => props.socket.emit('test', {'data':'test data'})}> Test Socket </button>
   </>
 }
 

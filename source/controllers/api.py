@@ -11,7 +11,7 @@ import time
 from threading import Thread
 
 app = Flask(__name__)
-socketio = SocketIO(app)
+socketio = SocketIO(app, cors_allowed_origins="*")
 buffer_engine = BufferEngine()
 daq_engine = DaqEngine("daq engine", [SimulatedDaqDriver("sim daq driver")], buffer_engine)
 plot_subscriptions: List[Tuple[str, Queue]] = []
