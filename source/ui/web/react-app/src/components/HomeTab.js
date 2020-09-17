@@ -57,11 +57,17 @@ function AAdder () {
 function SingleValue (props) {
   // const value = useNumericValue(props.socket, props.key)
   const [value, setValue] = useState(0)
+  // const [renderCount, setRenderCount] = useState(0);
   useEffect(() => {
     // check to see if a connection already exists
-    props.socket.on(props.tag, (value) => setValue(value))  // do not name any prop "key"... "key" seems to be reserved
+    props.socket.on(props.tag, (value) => {
+      setValue(value);
+      // setRenderCount(renderCount+1);  // for some reason, enabling this line causes updates to take longer and longer after evey rerender
+    }
+    )  // do not name any prop "key"... "key" seems to be reserved
     // maybe return a function to cleanup the connection?
   })
+
   return <>
     <p>{value}</p>
     {/* <useNumericValue/> */}
@@ -69,16 +75,18 @@ function SingleValue (props) {
   </>
 }
 
+// TODO get this working later
 function ConnectionStatus(props) {
   const [connected, setConnected] = useState(false)
   useEffect(() => {
+    // maybe add some logic to `connected` to the correct state initially
     if ({connected})
-      props.socket.on("disconnected", () => setConnected(false));
+      props.socket.on("disconnect", () => setConnected(false));
     else
-      props.socket.on("connected", () => setConnected(true));
+      props.socket.on("connection", () => setConnected(true));
   })
-  // const status = {connected} ? "Connected" : "Disconnected";
-  const status = true ? "Connected" : "Disconnected";
+  const status = {connected} ? "Connected" : "Disconnected";
+  // const status = true ? "Connected" : "Disconnected";
   return <>{status}</>
 }
 
