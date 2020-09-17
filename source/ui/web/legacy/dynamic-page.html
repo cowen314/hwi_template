@@ -1,0 +1,21 @@
+<body>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+    This page uses websockets
+    <br>
+    <button><a href="gui.html">Main Page</a></button>
+    <script type="text/javascript" charset="utf-8">
+        var socket = io.connect('http://127.0.0.1:5001');
+        // verify our websocket connection is established
+        socket.on('connect', function() {
+            console.log('Websocket connected!');
+        });
+        // message handler for the 'join_room' channel
+        socket.on('join_room', function(msg) {
+            console.log(msg);
+        });
+        // createGame onclick - emit a message on the 'create' channel to 
+        function buttonClicked() {
+          socket.emit('test', {data: 'this is example data'});
+        }
+    </script>
+</body>

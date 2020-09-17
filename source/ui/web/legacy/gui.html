@@ -1,0 +1,74 @@
+<head>
+    <script src="daq.js"></script>
+    <meta charset="UTF-8">
+</head>
+
+<!-- Once we're loaded, kick off some periodic updates -->
+<script>
+    document.addEventListener("DOMContentLoaded", function(event) {
+        setInterval(periodic_update, 1000);
+    });
+
+    function periodic_update() {
+        update_table('data_table');
+        // add other functions to be run periodically here
+    }
+</script>
+
+<style>
+        html *
+        {
+            font-family: Arial !important;
+        }
+</style>
+
+<body>
+    <div>
+        <button><a href="dynamic-page.html">Dynamic Page</a></button>
+    </div>
+    <br>
+    <div>
+        <script>
+            function get_data(){
+                var request = new XMLHttpRequest();
+                request.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200){
+                        document.getElementById("data_demo").innerHTML = request.responseText
+                    }
+                }
+                request.open("GET", "http://127.0.0.1:5001/data_example", true)
+                request.send()
+            }
+        </script>
+        <button onclick="get_data()">Get Data</button>
+        <div id="data_demo">... No data loaded yet</div>
+    </div>
+    <br>
+    <br>
+    <div>
+        <h3>DAQ State</h3>
+        <div id="daq_state_indicator">The DAQ state has not been read yet</div>
+    </div>
+    <div>
+        <button onclick="start_daq('daq_state_indicator')">Start DAQ</button>
+        <button onclick="stop_daq('daq_state_indicator')">Stop DAQ</button>
+        <button onclick="reset_daq_error('daq_state_indicator')">Reset DAQ Error</button>
+        <!-- <button onclick="get_daq_state('daq_state_indicator')">Read DAQ State</button> -->
+        <button id="buffer_button" onclick="start_buffering()">Start Plotting</button>
+        <script>
+        </script>
+        <button onclick="generate_plot('daq_plot')">Update Plot</button>
+    </div>
+    <br>
+    <div>
+        <!-- <button onclick="update_table('data_table')">Update Table</button> -->
+        <table id="data_table">
+            <tr>
+                <th>Name</th>
+                <th>Value</th>
+            </tr>
+        </table>
+    </div>
+    <br>
+    <div id="daq_plot"></div>
+</body>

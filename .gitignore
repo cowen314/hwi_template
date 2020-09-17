@@ -1,10 +1,11 @@
 /venv_common
 /.idea
+/.vscode
 
 !/.idea/runConfigurations
 /venv/
 
-/source/ui/electron/node_modules/
+/source/ui/web/node_modules/
 
 # Standard stuff:
 
