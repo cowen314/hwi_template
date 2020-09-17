@@ -25,20 +25,23 @@ def main():
 @socketio.on('test')
 def test_from_client(data):
     print("Socket message received from server: %s" % data)
+    socketio.emit("confirmationKey", {"value": ""})
 
 
 def send_socket_test_messages():
-    print("starting test transmissions...")
-    for i in range(1, 5):
-        emit("testKey", {"value": i})
-        time.sleep(3)
+    with app.test_request_context():
+        print("starting test transmissions...")
+        for i in range(1, 5):
+            socketio.emit("testKey", {"value": time.time()})
+            time.sleep(3)
 
 
 @socketio.on('connect')
 def handle_connect():
-    print("Client connected, starting test message thread")
-    test_message_thread = Thread(target=send_socket_test_messages)
-    test_message_thread.start()
+    # print("Client connected, starting test message thread")
+    print("Client connected")
+    # test_message_thread = Thread(target=send_socket_test_messages)
+    # test_message_thread.start()
 
 
 @socketio.on('disconnect')
