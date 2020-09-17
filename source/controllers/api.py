@@ -8,6 +8,7 @@ from transitions.core import MachineError
 from typing import List, Tuple
 from queue import Queue
 import time
+from random import random
 from threading import Thread
 
 app = Flask(__name__)
@@ -25,7 +26,7 @@ def main():
 @socketio.on('test')
 def test_from_client(data):
     print("Socket message received from server: %s" % data)
-    socketio.emit("confirmationKey", {"value": ""})
+    socketio.emit("fromServer", random())
 
 
 def send_socket_test_messages():

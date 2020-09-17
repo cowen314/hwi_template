@@ -22,9 +22,9 @@ function App () {
           Learn React
         </a>
       </header>
-      <body>
+      <div>
         <HomeTab socket={socket} name="Test"/>
-      </body>
+      </div>
 
     </div>
   )

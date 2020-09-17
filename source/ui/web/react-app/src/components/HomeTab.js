@@ -14,8 +14,9 @@ class HomeTab extends React.Component {
       <div>
         <ValueTable />
         <AAdder />
-        <SingleValue socket={this.props.socket} key="testKey"/>
+        <SingleValue socket={this.props.socket} tag="fromServer"/>
         <SocketTestButton socket={this.props.socket}/>
+        <ConnectionStatus socket={this.props.socket}/>
       </div>
 
     </>
@@ -54,27 +55,37 @@ function AAdder () {
 }
 
 function SingleValue (props) {
-  const value = useNumericValue(props.socket, props.key)
+  // const value = useNumericValue(props.socket, props.key)
+  const [value, setValue] = useState(0)
+  useEffect(() => {
+    // check to see if a connection already exists
+    props.socket.on(props.tag, (value) => setValue(value))  // do not name any prop "key"... "key" seems to be reserved
+    // maybe return a function to cleanup the connection?
+  })
   return <>
     <p>{value}</p>
+    {/* <useNumericValue/> */}
+    {/* <p>{useNumericValue}</p> */}
   </>
+}
+
+function ConnectionStatus(props) {
+  const [connected, setConnected] = useState(false)
+  useEffect(() => {
+    if ({connected})
+      props.socket.on("disconnected", () => setConnected(false));
+    else
+      props.socket.on("connected", () => setConnected(true));
+  })
+  // const status = {connected} ? "Connected" : "Disconnected";
+  const status = true ? "Connected" : "Disconnected";
+  return <>{status}</>
 }
 
 function SocketTestButton (props) {
   return <>
     <button onClick={() => props.socket.emit('test', {'data':'test data'})}> Test Socket </button>
   </>
-}
-
-function useNumericValue (socket, key) {
-  const [value, setValue] = useState(-1)
-
-  useEffect(() => {
-    // check to see if a connection already exists
-    socket.on(key, (value) => setValue(value))
-    // maybe return a function to cleanup the connection?
-  })
-  return value
 }
 
 class DateAndCounter extends React.Component {
