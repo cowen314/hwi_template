@@ -21,7 +21,13 @@ Preliminary steps for getting them to play together:
 3. Configure the startup script (`startup.js`) to create the electron window. Add `"main": "src/startup.js"` to package.json. 
 1. Install `electron-is-dev`. Use it to tell electron to look at the NodeJS + webpack server (which runs with `npm start`) when in the development context, or `index.html` in the builds folder when in the build context.  
 
----
+# Typescript
+
+Followed [these instructions](https://create-react-app.dev/docs/adding-typescript/) to add it to the project
+
+Great quick overview of Typescript [here](https://www.typescriptlang.org/docs/handbook/basic-types.html)
+
+Type overview [here](https://www.typescriptlang.org/docs/handbook/basic-types.html)
 
 # electron-quick-start - GENERIC
 
