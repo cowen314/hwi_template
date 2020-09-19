@@ -1,5 +1,6 @@
 /* eslint-disable no-useless-constructor */
 import React, { useState, useEffect } from 'react'
+import BasicPlotlyGraph from './Graphs'
 
 interface socketType {  // example of a typescript interface
   on: (eventName: string, callback: any) => (any);
@@ -23,6 +24,7 @@ function HomeTab (props: HomeTabProps) {
       <SingleValue socket={props.socket} tag="fromServer"/>
       <SocketTestButton socket={props.socket}/>
       <ConnectionStatus socket={props.socket}/>
+      <BasicPlotlyGraph />
     </div>
 
   </>
