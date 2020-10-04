@@ -12,6 +12,7 @@
     "@types/react": "^16.9.49",
     "@types/react-dom": "^16.9.8",
     "electron-is-dev": "^1.2.0",
+    "plotly.js-basic-dist": "^1.55.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-plotly.js": "^2.5.0",
@@ -42,6 +43,7 @@
     ]
   },
   "devDependencies": {
+    "@types/react-plotly.js": "^2.2.4",
     "electron": "^9.2.0",
     "eslint-config-standard": "^14.1.1",
     "eslint-plugin-import": "^2.22.0",
