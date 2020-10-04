@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 
-import createPlotlyComponent from 'react-plotly.js/factory';
-import Plotly from 'plotly.js-basic-dist';  // https://github.com/plotly/react-plotly.js/issues/135
+// import createPlotlyComponent from 'react-plotly.js/factory';
+// import Plotly from 'plotly.js-basic-dist';  // https://github.com/plotly/react-plotly.js/issues/135
 // import Plot from 'react-plotly.js';
-const Plot = createPlotlyComponent(Plotly);
+// const Plot = createPlotlyComponent(Plotly);
 
 interface singlePlotInf {
     x: Array<number>;
@@ -43,7 +43,8 @@ function BasicPlotlyGraph() {
         }
     };
 
-    return <Plot data={plotJSON} />
+    // return <Plot data={plotJSON} />
+    return <></>
 }
 
 export default BasicPlotlyGraph;
