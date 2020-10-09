@@ -22,6 +22,7 @@ import { mainListItems, secondaryListItems } from './listItems';
 import Chart from './Chart';
 import Deposits from './Deposits';
 import Orders from './Orders';
+import { SocketType } from '../custom_type_declarations/common-types';
 
 function Copyright() {
   return (
@@ -122,7 +123,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Dashboard() {
+interface DashboardProps {
+  socket: SocketType;
+  name: string;
+}
+
+export default function Dashboard(props: DashboardProps) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
   const toggleDrawer = () => {
@@ -189,6 +195,7 @@ export default function Dashboard() {
           <Grid container spacing={3}>
             {/* Chart */}
             <Grid item xs={12} md={8} lg={9}>
+              <p>{props.name}</p>
               <Paper className={fixedHeightPaper}>
                 <Chart />
               </Paper>
@@ -202,7 +209,7 @@ export default function Dashboard() {
             {/* Recent Orders */}
             <Grid item xs={12}>
               <Paper className={classes.paper}>
-                <Orders />
+                <Orders socket={props.socket} />
               </Paper>
             </Grid>
           </Grid>

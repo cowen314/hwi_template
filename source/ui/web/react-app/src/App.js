@@ -10,7 +10,8 @@ function App () {
   return (
     <div>
       <div>
-        <Dashboard></Dashboard>
+        <Dashboard socket={socket} name="test key"/>
+        {/* <Dashboard name="test string" /> */}
         {/* <HomeTab socket={socket} name="Test"/> */}
       </div>
     </div>
