@@ -4,15 +4,17 @@ import './App.css'
 import HomeTab from './components/HomeTab'
 import io from 'socket.io-client'
 import Dashboard from './dashboard/Dashboard'
+import CompositionApproach from './components/DataPipeline'
 
 function App () {
   const socket = io.connect('http://localhost:5001')
   return (
     <div>
       <div>
-        <Dashboard socket={socket} name="test key"/>
+        {/* <Dashboard socket={socket} name="test key"/> */}
         {/* <Dashboard name="test string" /> */}
         {/* <HomeTab socket={socket} name="Test"/> */}
+        <CompositionApproach />
       </div>
     </div>
   )

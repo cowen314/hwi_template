@@ -29,20 +29,17 @@ function ValueTable(props : {tags: {}}){
         </TableRow>
         </TableHead>
         <TableBody>
-        Object.entries(tags).forEach(([key, val]) => {
-            <TableRow id={key}>
-                <TableCell>{val}</TableCell>
-            </TableRow>
-        });
-        {/* {props.tags.map((tag) => (
-
-        ))} */}
+            {Object.entries(tags).forEach(([key, val]) => {
+                <TableRow id={key}>
+                    <TableCell>{val}</TableCell>
+                </TableRow>
+            }}
         </TableBody>
     </Table>
     </>
 }
 
-function TagCatcher() {
+function CompositionApproach() {
     const [tags, setTags] = useState({
         "testTag123": 123
     });
