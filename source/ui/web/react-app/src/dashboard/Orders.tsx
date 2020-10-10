@@ -75,11 +75,23 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface OrdersProps {
-  socket: SocketType
+  socket: SocketType,
+  tag: string
+}
+
+function processRowUpdate() {
+
 }
 
 export default function Orders(props: OrdersProps) {
+  const [rowData, setRowData] = React.useState(rows);
   const classes = useStyles();
+  React.useEffect(() => {
+    // eventually want to do this in a loop
+    props.socket.on(props.tag, (value: number) => {
+      processRowUpdate(value);
+    });
+  });
   return (
     <React.Fragment>
       <Title>Recent Orders</Title>
@@ -94,7 +106,7 @@ export default function Orders(props: OrdersProps) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
+          {rowData.map((row) => (
             <TableRow key={row.id}>
               <TableCell>{row.date}</TableCell>
               <TableCell>{row.name}</TableCell>

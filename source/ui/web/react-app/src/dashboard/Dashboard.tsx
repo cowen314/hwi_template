@@ -209,7 +209,7 @@ export default function Dashboard(props: DashboardProps) {
             {/* Recent Orders */}
             <Grid item xs={12}>
               <Paper className={classes.paper}>
-                <Orders socket={props.socket} />
+                <Orders socket={props.socket} tag="testTag" />
               </Paper>
             </Grid>
           </Grid>
