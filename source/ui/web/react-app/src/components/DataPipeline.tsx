@@ -10,17 +10,10 @@ import { IconButton } from '@material-ui/core';
 // Goal: determine how to best pass frequently updating data/tags to React components,
 // where the components need to render a variable number of tags (e.g. in a dynamic list, graph, etc) 
 
-function Tag(props : {data: number, key: string, displayKey: boolean}) {
-    if (!props.displayKey){
-        return <p>{props.data}</p>
-    }
-    return <p>{props.key} - {props.data}</p>
-}
-
 // Option 1: using composition
 // Pass the data in as props
 
-function ValueTable(props : {tags: {}}){
+function ValueTable(props : {tags : any}){  // FIXME
     return <>
     <Table size="small">
         <TableHead>
@@ -29,24 +22,50 @@ function ValueTable(props : {tags: {}}){
         </TableRow>
         </TableHead>
         <TableBody>
-            {Object.entries(tags).forEach(([key, val]) => {
-                <TableRow id={key}>
-                    <TableCell>{val}</TableCell>
+        {
+            // for (var key in tags) {
+            //     <TableRow id="1">
+            //         <TableCell>1</TableCell>
+            //     </TableRow>
+            // }
+
+            // Object.entries(props.tags).forEach(([k,v]) => {
+            //     <TableRow id="1">
+            //         <TableCell>1</TableCell>
+            //     </TableRow>
+            // })
+
+            Object.keys(props.tags).map((key) => (
+                <TableRow>
+                    <TableCell>{key as string}</TableCell>
+                    <TableCell>{props.tags[key] as number}</TableCell>
                 </TableRow>
-            }}
+            ))
+
+            // Object.entries(tags).forEach(([key, val]) => (
+            //     <TableRow id="1">
+            //         <TableCell>1</TableCell>
+            //     </TableRow>
+            // )
+        }
         </TableBody>
     </Table>
     </>
 }
 
-function CompositionApproach() {
+function generateDataRows(tags: {}) {
+
+}
+
+export default function CompositionApproach() {
     const [tags, setTags] = useState({
         "testTag123": 123
     });
     const setRandomTags = () => {
-        var test = {};
-        for (var i=0; i > 5; i++) {
-            test[i.toString()] = i;
+        // var test : Record<string, number> = {"test": 1};
+        var test : any = {"test": 1}; // FIXME remove `any`
+        for (var i=0; i < 5; i++) {
+            test[i.toString()] = Math.random();
         }
         setTags(test);
     }

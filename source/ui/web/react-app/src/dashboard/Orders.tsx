@@ -86,12 +86,12 @@ function processRowUpdate() {
 export default function Orders(props: OrdersProps) {
   const [rowData, setRowData] = React.useState(rows);
   const classes = useStyles();
-  React.useEffect(() => {
-    // eventually want to do this in a loop
-    props.socket.on(props.tag, (value: number) => {
-      processRowUpdate(value);
-    });
-  });
+  // React.useEffect(() => {
+  //   // eventually want to do this in a loop
+  //   props.socket.on(props.tag, (value: number) => {
+  //     processRowUpdate(value);
+  //   });
+  // });
   return (
     <React.Fragment>
       <Title>Recent Orders</Title>
