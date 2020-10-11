@@ -36,7 +36,7 @@ function ValueTable(props : {tags : any}){  // FIXME
             // })
 
             Object.keys(props.tags).map((key) => (
-                <TableRow>
+                <TableRow id={key}>
                     <TableCell>{key as string}</TableCell>
                     <TableCell>{props.tags[key] as number}</TableCell>
                 </TableRow>
@@ -53,8 +53,22 @@ function ValueTable(props : {tags : any}){  // FIXME
     </>
 }
 
-function generateDataRows(tags: {}) {
+function updateBuffer() {
 
+}
+
+function GraphBuffers() {
+    const (bufferedData, setBufferedData) = useState(dictionary(string, number[]))
+    // LEFT OFF HERE: when something happens (new tags data received), we need to update the buffers 
+}
+
+function Graph(props: {tags : any}) {
+    // store the current values in buffers (part of this component's state)
+    const [bufferedData, setBufferedData] = useState({});  // dictionary(string, number[])
+    // when something happens, the buffers here get updated
+    // don't think this can be compositional, because it actually has state
+    // we _could_ pass a buffer component into this as a prop... yeah, let's do that
+    return <></>  // TODO draw plot
 }
 
 export default function CompositionApproach() {
@@ -63,7 +77,7 @@ export default function CompositionApproach() {
     });
     const setRandomTags = () => {
         // var test : Record<string, number> = {"test": 1};
-        var test : any = {"test": 1}; // FIXME remove `any`
+        var test : any = {"test": 1}; // FIXME find appropriate type
         for (var i=0; i < 5; i++) {
             test[i.toString()] = Math.random();
         }
