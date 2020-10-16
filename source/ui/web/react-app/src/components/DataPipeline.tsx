@@ -182,6 +182,10 @@ function shuffleInBufferMultipoint(newData: any, bufferedData: any, bufferLength
     return bufferedData;
 }
 
+// LEFT OFF HERE - 
+// NOt sure if Recharts is the plotting library that I should be using here. 
+// Get a plotting library that works first, then implement all of this buffering stuff
+
 // assumed that bufferedData is a list of 
 function shuffleInBufferSinglePoint(newData: any, bufferedData: any, bufferLength: number){
     
