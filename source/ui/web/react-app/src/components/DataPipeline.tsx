@@ -5,7 +5,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import { Container, IconButton, makeStyles, useTheme } from '@material-ui/core';
+import { Button, Container, IconButton, makeStyles, useTheme } from '@material-ui/core';
 import { SocketType } from '../custom_type_declarations/common-types';
 import { ResponsiveContainer, LineChart, XAxis, YAxis, Label, Line } from 'recharts';
 import Title from '../dashboard/Title';
@@ -144,18 +144,47 @@ function ValueTable(props : {tags : any}){  // FIXME
     </>
 }
 
-function BufferedGraph(props: {socket: SocketType, socketEventName: string, lengths: number}) {
+function BufferedSocketGraph(props: {socket: SocketType, socketEventName: string, lengths: number}) {
     // TODO move the buffering logic to another component or entity that can be reused in other places where buffering is needed
     const [bufferedData, setBufferedData] = useState({}); // dictionary(string, number[]))
     useEffect(
-        () => props.socket.on(props.socketEventName, (data: any) => {  // FIXME switch the type of `data`
+        () => {
+            props.socket.on(props.socketEventName, (data: any) =>
+            {  // FIXME switch the type of `data`
             // concatenate the values in the dictionary with existing values in the buffer, removing old samples
-            Object.keys(data).forEach((key) => (bufferedData as any)[key].concatenate(data[key]));  // TODO rotate out any samples beyond given length
-            setBufferedData(bufferedData);
-    }));
+                setBufferedData(shuffleInBufferMultipoint(data, bufferedData, props.lengths));
+            })
+        }  // be sure to get the brackets correct here, the errors throw as a result of incorrect brackets can be quite confusing
+    );
     return <>
     <Graph data={bufferedData}/>
     </>
+}
+
+function BufferedButtonGraph(props: {lengths: number}){
+    const [bufferedData, setBufferedData] = useState({"name":"plot1"});  // dictionary(string, number[]))
+    const newDataRequested = () => setBufferedData(shuffleInBufferMultipoint({"plot1":Math.random()}, bufferedData, props.lengths))
+    return <>
+    <Button onClick={newDataRequested}>New Data</Button>
+    <Graph data={bufferedData}/>
+    </>
+}
+
+function shuffleInBufferMultipoint(newData: any, bufferedData: any, bufferLength: number){  // FIXME move away from any
+    Object.keys(newData).forEach((key) =>
+        {
+            bufferedData[key] = bufferedData[key].concat(newData[key]);
+            if (bufferedData[key].length > bufferLength){
+                bufferedData[key] = bufferedData[key].slice(bufferedData[key].length-bufferLength);
+            }
+        }
+    );
+    return bufferedData;
+}
+
+// assumed that bufferedData is a list of 
+function shuffleInBufferSinglePoint(newData: any, bufferedData: any, bufferLength: number){
+    
 }
 
 // function DataBuffer(props: {socket: SocketType, socketEventName: string, lengths: BigInteger}) {
@@ -170,7 +199,7 @@ function Graph(props: {data: any}) {
     // we _could_ pass a buffer component into this as a prop... yeah, let's do that
 
     // OK so I think?? I might need to use context here?
-    
+
     // Option 1: use context
     // I would create a context,
     // wrap the graph object in that context,
@@ -239,7 +268,7 @@ export default function CompositionApproach() {
             <Container maxWidth="lg" className={classes.container}>
                 <IconButton onClick={setRandomTags}>Generate New Tags</IconButton>
                 <ValueTable tags={tags}/>
-                <BufferedGraph socket={socket} socketEventName="testEvent" lengths={10}/>
+                <BufferedSocketGraph socket={socket} socketEventName="testEvent" lengths={10}/>
             </Container>
         </main>
     </div>
