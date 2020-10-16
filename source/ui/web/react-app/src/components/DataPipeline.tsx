@@ -184,7 +184,9 @@ function shuffleInBufferMultipoint(newData: any, bufferedData: any, bufferLength
 
 // LEFT OFF HERE - 
 // NOt sure if Recharts is the plotting library that I should be using here. 
-// Get a plotting library that works first, then implement all of this buffering stuff
+// Get a plotting library that works first,
+// then implement all of this buffering stuff and get click driven updates working,
+// then get it working with the socket 
 
 // assumed that bufferedData is a list of 
 function shuffleInBufferSinglePoint(newData: any, bufferedData: any, bufferLength: number){
