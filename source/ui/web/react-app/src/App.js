@@ -5,7 +5,7 @@ import HomeTab from './components/HomeTab'
 import io from 'socket.io-client'
 import Dashboard from './dashboard/Dashboard'
 import CompositionApproach from './components/DataPipeline'
-import RechartLineChartExample from './components/RechartExample'
+import { RechartLineChartExample, RechartScatterExample } from './components/RechartExample'
 
 function App () {
   const socket = io.connect('http://localhost:5001')
@@ -16,7 +16,8 @@ function App () {
         {/* <Dashboard name="test string" /> */}
         {/* <HomeTab socket={socket} name="Test"/> */}
         {/* <CompositionApproach /> */}
-        <RechartLineChartExample />
+        {/* <RechartLineChartExample /> */}
+        <RechartScatterExample />
       </div>
     </div>
   )
